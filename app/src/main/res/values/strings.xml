@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Budget Tracking Application</string>
+    <string name="title_activity_landing_page">LandingPage</string>
+</resources>
