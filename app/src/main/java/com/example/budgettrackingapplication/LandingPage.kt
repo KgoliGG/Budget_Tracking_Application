@@ -220,7 +220,7 @@ private fun Heading(name: String){
                     disabledElevation = 0.dp
                 ),
                 modifier = Modifier
-                    .width(200.dp)
+                    .fillMaxWidth()
                     .height(50.dp)
             ) {
                 Text(
