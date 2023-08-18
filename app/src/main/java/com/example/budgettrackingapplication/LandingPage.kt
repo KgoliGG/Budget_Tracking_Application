@@ -22,12 +22,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -35,17 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navigation
 import com.example.budgettrackingapplication.composable.BackgroundDesign
-import com.example.budgettrackingapplication.composable.LoginPage
-import com.example.budgettrackingapplication.composable.LoginPagePreview
 import com.example.budgettrackingapplication.ui.theme.BudgetTrackingApplicationTheme
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
@@ -54,22 +42,6 @@ class LandingPage : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             BudgetTrackingApplicationTheme {
-                val navController: NavController
-                navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "welcome" ){
-                    navigation(
-                        startDestination = "welcome",
-                        route = "auth"
-                    ){
-                        composable("landing"){
-
-                        }
-                        composable("login"){
-
-                        }
-                    }
-
-                }
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -82,37 +54,32 @@ class LandingPage : ComponentActivity() {
 }
 
 @Composable
-inline fun <reified T :ViewModel> NavBackStackEntry.sharedViewModel(navController: NavController): T {
-    val navGraphRoute = destination.parent?.route ?:return viewModel()
-    val parentEntry = remember(this) {
-        navController.getBackStackEntry(navGraphRoute)
-    }
-    return viewModel(parentEntry)
-}
-
-
-@Composable
-private fun Heading(name: String){
+private fun Heading(){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxSize()
+            .padding(20.dp)
 //            .padding(10.dp,130.dp)
     ) {
         Text(
             text = "Welcome to".uppercase(),
+            fontSize = 16.sp,
             fontFamily = montserrat,
             fontWeight = FontWeight(600),
             color = Color(0xFFFFFFFF),
             letterSpacing = 1.6.sp,
+            textAlign = TextAlign.Center,
             modifier = Modifier
-                .width(131.dp)
-                .height(20.dp)
+                .fillMaxWidth()
+
         )
+
         Text(
-            text = name.uppercase(),
+            text = "Solvio".uppercase(),
             style = TextStyle(
-                fontSize = 32.2.sp,
+                fontSize = 40.sp,
                 fontFamily = montserrat,
                 fontWeight = FontWeight(700),
                 color = Color(0xFFFFFFFF),
@@ -124,7 +91,7 @@ private fun Heading(name: String){
         Text(
             text = "Helping you track your expenditure".uppercase(),
             style = TextStyle(
-                fontSize = 8.05.sp,
+                fontSize = 10.sp,
                 fontFamily = montserrat,
                 fontWeight = FontWeight(700),
                 color = Color(0xFFFFFFFF),
@@ -141,7 +108,7 @@ private fun Heading(name: String){
                 painter = painterResource(id = R.drawable.logo_mark),
                 contentDescription = null,
                 Modifier
-                    .size(90.dp,150.dp)
+                    .size(105.dp,175.dp)
             )
         }
 
@@ -156,7 +123,7 @@ private fun Heading(name: String){
             Text(
                 text = "Set a Budget".uppercase(),
                 style = TextStyle(
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     fontFamily = montserrat,
                     fontWeight = FontWeight(700),
                     color = Color(0xFFFFFFFF),
@@ -175,7 +142,7 @@ private fun Heading(name: String){
             Text(
                 text = "Track your Spending".uppercase(),
                 style = TextStyle(
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     fontFamily = montserrat,
                     fontWeight = FontWeight(700),
                     color = Color(0xFFFFFFFF),
@@ -194,7 +161,7 @@ private fun Heading(name: String){
             Text(
                 text = "Increase Savings".uppercase(),
                 style = TextStyle(
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     fontFamily = montserrat,
                     fontWeight = FontWeight(700),
                     color = Color(0xFFFFFFFF),
@@ -207,7 +174,7 @@ private fun Heading(name: String){
 
         Box(
             modifier = Modifier
-            .padding(top = 75.dp)
+            .padding(top = 50.dp)
         ){
             Button(
                 onClick = {
@@ -244,7 +211,7 @@ private fun Heading(name: String){
 @Composable
 fun LandingPagePreview(){
     BackgroundDesign()
-    Box(modifier = Modifier.padding(top = 130.dp)){
-        Heading(name = "Solvio")
+    Box(modifier = Modifier.padding(top = 40.dp)){
+        Heading()
     }
 }

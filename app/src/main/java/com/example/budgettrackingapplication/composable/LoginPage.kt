@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,11 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
@@ -31,11 +30,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,14 +45,11 @@ import com.example.budgettrackingapplication.R
 import com.example.budgettrackingapplication.ui.theme.BudgetTrackingApplicationTheme
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
-@ExperimentalMaterial3Api
 class LoginPage : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent(){
             BudgetTrackingApplicationTheme{
-//                val navController: NavController
-//                navController = rememberNavController()
                 LoginPagePreview()
             }
         }
@@ -58,7 +57,6 @@ class LoginPage : ComponentActivity() {
 
 }
 
-@ExperimentalMaterial3Api
 @Composable
 fun LoginPageLayout(){
 
@@ -82,26 +80,27 @@ fun LoginPageLayout(){
         Text(
             text = "Login".uppercase(),
             style = TextStyle(
-                fontSize = 50.sp,
+                fontSize = 60.sp,
                 fontFamily = montserrat,
                 fontWeight = FontWeight(700),
                 color = Color(0XFFFFFFFF),
             ),
             modifier = Modifier
-                .padding(top = 150.dp)
+                .padding(top = 100.dp)
         )
 
         Text(
-            text = "with your account registered with Savio to continue with the app.",
+            text = "with your account registered with SOLVIO to continue with the app.",
             style = TextStyle(
-                fontSize = 12.sp,
+                fontSize = 16.sp,
                 fontFamily = montserrat,
-                fontWeight = FontWeight(400),
+                fontWeight = FontWeight(500),
                 color = Color(0xFFFFFFFF),
                 letterSpacing = 0.24.sp,
             ),
             modifier = Modifier
                 .padding(top = 10.dp)
+                .fillMaxWidth(0.9f)
         )
         Spacer(
             modifier = Modifier.padding(10.dp)
@@ -132,7 +131,7 @@ fun LoginPageLayout(){
                             color = Color.White,
                             fontFamily = montserrat,
                             fontWeight = FontWeight(400),
-                            fontSize = 14.sp,
+                            fontSize = 16.sp,
                             letterSpacing = .24.sp
                         ),
                         modifier = Modifier.padding()
@@ -177,7 +176,7 @@ fun LoginPageLayout(){
                             color = Color.White,
                             fontFamily = montserrat,
                             fontWeight = FontWeight(400),
-                            fontSize = 14.sp,
+                            fontSize = 16.sp,
                             letterSpacing = .24.sp
                         )
                     )
@@ -217,9 +216,8 @@ fun LoginPageLayout(){
                 verticalAlignment = Alignment.Top,
 //                horizontalArrangement = Arrangement.SpaceBetween
             ){
-                //Login Errors
+//Login Errors
                 Text(
-
                     text = loginerror,
                     style = TextStyle(
                         color = Color.Red,
@@ -239,7 +237,7 @@ fun LoginPageLayout(){
                 Text(
                     text = "Forgot Password?",
                     style = TextStyle(
-                        fontSize = 12.sp,
+                        fontSize = 14.sp,
                         fontFamily = montserrat,
                         fontWeight = FontWeight(600),
                         color = Color(0xFFFFFFFF),
@@ -273,10 +271,29 @@ fun LoginPageLayout(){
                     colors = CheckboxDefaults.colors(Color.White)
                 )
 
-                Text(
-                    text = "I agree to all the Terms & Conditions.",
+                ClickableText(text = buildAnnotatedString {
+                    append("I have read ")
+                    withStyle(
+                        style = SpanStyle(
+                            color = Color.White,
+                        )
+                    ) {
+                        append("Terms and Condition")
+                    }
+                    append(" and ")
+                    withStyle(
+                        style = SpanStyle(
+                        color = Color.White,
+                        )
+                    ) {
+                        append("Privacy policy")
+                    }
+                },
+                    onClick = {
+                    println("Clicked offset $it")
+                },
                     style = TextStyle(
-                        fontSize = 12.sp,
+                        fontSize = 14.sp,
                         fontFamily = montserrat,
                         fontWeight = FontWeight(600),
                         color = Color(0xFFFFFFFF),
@@ -346,7 +363,6 @@ fun LoginPageLayout(){
     }
 }
 
-@ExperimentalMaterial3Api
 @Preview
 @Composable
 fun LoginPagePreview(){
