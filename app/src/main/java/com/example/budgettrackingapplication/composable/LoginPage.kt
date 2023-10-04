@@ -41,24 +41,18 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.R
 import com.example.budgettrackingapplication.ui.theme.BudgetTrackingApplicationTheme
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
-class LoginPage : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent(){
-            BudgetTrackingApplicationTheme{
-                LoginPagePreview()
-            }
-        }
-    }
-
-}
 
 @Composable
-fun LoginPageLayout(){
+fun LoginPage(navHostController: NavHostController){
+
+    BackgroundDesign()
+
 
     val email = remember { mutableStateOf("") }
 
@@ -367,5 +361,5 @@ fun LoginPageLayout(){
 @Composable
 fun LoginPagePreview(){
     BackgroundDesign()
-    LoginPageLayout()
+    LoginPage(rememberNavController())
 }

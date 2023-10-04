@@ -1,8 +1,5 @@
-package com.example.budgettrackingapplication
+package com.example.budgettrackingapplication.composable
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,8 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,28 +28,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.budgettrackingapplication.composable.BackgroundDesign
-import com.example.budgettrackingapplication.ui.theme.BudgetTrackingApplicationTheme
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.budgettrackingapplication.R
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
-class LandingPage : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            BudgetTrackingApplicationTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    LandingPagePreview()
-                }
-            }
-        }
-    }
-}
 
 @Composable
-private fun Heading(){
+fun LandingPage(navController: NavHostController){
+    BackgroundDesign()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -176,42 +159,44 @@ private fun Heading(){
             modifier = Modifier
             .padding(top = 50.dp)
         ){
-            Button(
-                onClick = {
-                },
-                colors = ButtonDefaults.buttonColors(Color(0xFF4F517D)),
-                shape = RoundedCornerShape(10.dp),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 10.dp,
-                    pressedElevation = 15.dp,
-                    disabledElevation = 0.dp
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-            ) {
-                Text(
-                    text = "Get Started".uppercase(),
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = montserrat,
-                        fontWeight = FontWeight(700),
-                        color = Color(0xFFFFFFFF),
-                        textAlign = TextAlign.Center,
-                        letterSpacing = 1.6.sp,
-                    )
-                )
-            }
+            GetStartedButton(navController)
         }
 
     }
 }
-
+@Composable
+fun GetStartedButton(navController: NavHostController) {
+    Button(
+        onClick = {
+            navController.navigate("registration")
+        },
+        colors = ButtonDefaults.buttonColors(Color(0xFF4F517D)),
+        shape = RoundedCornerShape(10.dp),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = 10.dp,
+            pressedElevation = 15.dp,
+            disabledElevation = 0.dp
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp)
+    ){
+        Text(
+            text = "Get Started".uppercase(),
+            style = TextStyle(
+                fontSize = 16.sp,
+                fontFamily = montserrat,
+                fontWeight = FontWeight(700),
+                color = Color(0xFFFFFFFF),
+                textAlign = TextAlign.Center,
+                letterSpacing = 1.6.sp,
+            )
+        )
+    }
+}
 @Preview(showBackground = true)
 @Composable
 fun LandingPagePreview(){
     BackgroundDesign()
-    Box(modifier = Modifier.padding(top = 40.dp)){
-        Heading()
-    }
+    LandingPage(rememberNavController())
 }
