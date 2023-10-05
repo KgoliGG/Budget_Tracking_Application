@@ -1,8 +1,5 @@
-package com.example.budgettrackingapplication.composable
+package com.example.budgettrackingapplication.composable.screens
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,15 +38,16 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.R
-import com.example.budgettrackingapplication.ui.theme.BudgetTrackingApplicationTheme
+import com.example.budgettrackingapplication.composable.BackgroundDesign
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
 
 @Composable
-fun LoginPage(navHostController: NavHostController){
+fun LoginPage(navController: NavController){
 
     BackgroundDesign()
 

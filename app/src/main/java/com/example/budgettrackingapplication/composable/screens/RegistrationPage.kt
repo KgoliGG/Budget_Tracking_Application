@@ -1,8 +1,5 @@
-package com.example.budgettrackingapplication.composable
+package com.example.budgettrackingapplication.composable.screens
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +16,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,16 +37,16 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.R
-import com.example.budgettrackingapplication.ui.theme.BudgetTrackingApplicationTheme
+import com.example.budgettrackingapplication.composable.BackgroundDesign
+import com.example.budgettrackingapplication.navigation.Screen
 import com.example.budgettrackingapplication.ui.theme.montserrat
-import androidx.compose.ui.tooling.preview.Preview as Preview1
 
 
 @Composable
-fun RegistrationPage(navHostController: NavHostController){
+fun RegistrationPage(navController: NavController){
 
     val email = remember { mutableStateOf("") }
 
@@ -322,7 +318,10 @@ fun RegistrationPage(navHostController: NavHostController){
                 }
             },
                 onClick = {
-                    println("Clicked offset $it")
+                    navController.navigate(
+                        route = Screen.LoginPage.name
+                    )
+
                 },
                 style = TextStyle(
                     fontSize = 14.sp,

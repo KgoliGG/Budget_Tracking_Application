@@ -1,4 +1,4 @@
-package com.example.budgettrackingapplication.composable
+package com.example.budgettrackingapplication.composable.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,14 +28,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.R
+import com.example.budgettrackingapplication.navigation.Screen
+import com.example.budgettrackingapplication.composable.BackgroundDesign
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
 
 @Composable
-fun LandingPage(navController: NavHostController){
+fun LandingPage(navController: NavController){
     BackgroundDesign()
 
     Column(
@@ -159,39 +161,37 @@ fun LandingPage(navController: NavHostController){
             modifier = Modifier
             .padding(top = 50.dp)
         ){
-            GetStartedButton(navController)
+            Button(
+                onClick = {
+                    navController.navigate(
+                        route = Screen.RegistrationPage.name
+                    )
+                },
+                colors = ButtonDefaults.buttonColors(Color(0xFF4F517D)),
+                shape = RoundedCornerShape(10.dp),
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 10.dp,
+                    pressedElevation = 15.dp,
+                    disabledElevation = 0.dp
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+            ){
+                Text(
+                    text = "Get Started".uppercase(),
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = montserrat,
+                        fontWeight = FontWeight(700),
+                        color = Color(0xFFFFFFFF),
+                        textAlign = TextAlign.Center,
+                        letterSpacing = 1.6.sp,
+                    )
+                )
+            }
         }
 
-    }
-}
-@Composable
-fun GetStartedButton(navController: NavHostController) {
-    Button(
-        onClick = {
-            navController.navigate("registration")
-        },
-        colors = ButtonDefaults.buttonColors(Color(0xFF4F517D)),
-        shape = RoundedCornerShape(10.dp),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 10.dp,
-            pressedElevation = 15.dp,
-            disabledElevation = 0.dp
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp)
-    ){
-        Text(
-            text = "Get Started".uppercase(),
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontFamily = montserrat,
-                fontWeight = FontWeight(700),
-                color = Color(0xFFFFFFFF),
-                textAlign = TextAlign.Center,
-                letterSpacing = 1.6.sp,
-            )
-        )
     }
 }
 @Preview(showBackground = true)
