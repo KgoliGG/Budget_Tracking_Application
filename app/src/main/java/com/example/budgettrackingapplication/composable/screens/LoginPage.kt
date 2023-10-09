@@ -394,7 +394,7 @@ fun LoginPagePreview(){
 }
 
 private fun validateEmail(email: String): Boolean {
-    return android.util.Patterns.EMAIL_ADDRESS.matcher(email.toString()).matches()
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
 
 private fun validatePassword(password: String): Boolean {
