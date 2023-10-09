@@ -20,12 +20,15 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -39,10 +42,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.R
 import com.example.budgettrackingapplication.composable.BackgroundDesign
+import com.example.budgettrackingapplication.composable.DatabaseHelper
+import com.example.budgettrackingapplication.navigation.Screen
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
 
@@ -51,14 +55,21 @@ fun LoginPage(navController: NavController){
 
     BackgroundDesign()
 
-
     val email = remember { mutableStateOf("") }
 
-    val loginerror = "Email Error"
+    val loginerror = remember { mutableStateOf("") }
 
     val password = remember { mutableStateOf("") }
 
     val viewpassword = remember { mutableStateOf(false) }
+
+    var isEmailValid by remember { mutableStateOf(true) }
+
+    var isPasswordValid by remember { mutableStateOf(true) }
+
+    val context = LocalContext.current
+
+    val databaseHelper = DatabaseHelper(context)
 
 //    val focusRequester = remember { FocusRequester() }
 
@@ -210,7 +221,7 @@ fun LoginPage(navController: NavController){
             ){
 //Login Errors
                 Text(
-                    text = loginerror,
+                    text = loginerror.value,
                     style = TextStyle(
                         color = Color.Red,
                         fontFamily = montserrat,
@@ -278,7 +289,7 @@ fun LoginPage(navController: NavController){
                         color = Color.White,
                         )
                     ) {
-                        append("Privacy policy")
+                        checked.value = true
                     }
                 },
                     onClick = {
@@ -300,7 +311,11 @@ fun LoginPage(navController: NavController){
 
 //Create Account Button
             OutlinedButton(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    navController.navigate(
+                        route = Screen.RegistrationPage.name
+                    )
+                },
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -317,7 +332,7 @@ fun LoginPage(navController: NavController){
                         letterSpacing = 1.2.sp,
                     )
                 )
-                
+
             }
 
             Spacer(
@@ -325,7 +340,23 @@ fun LoginPage(navController: NavController){
             )
 //Login Button
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    val emailValue = email.value
+                    val passwordValue = password.value
+
+                    isEmailValid = validateEmail(emailValue)
+                    isPasswordValid = validatePassword(passwordValue)
+
+                    if (isEmailValid && isPasswordValid) {
+                        val userExists = databaseHelper.checkCredentials(emailValue, passwordValue)
+                        if (userExists) {
+                            loginerror.value = "Login Successful"
+                        } else {
+                            loginerror.value = "Invalid Email or Password"
+                        }
+                    }
+                },
+                enabled = email.value.isNotEmpty() && password.value.isNotEmpty() && checked.value,
                 colors = ButtonDefaults.buttonColors(Color(0xFF4F517D)),
                 shape = RoundedCornerShape(10.dp),
                 elevation = ButtonDefaults.buttonElevation(
@@ -360,4 +391,12 @@ fun LoginPage(navController: NavController){
 fun LoginPagePreview(){
     BackgroundDesign()
     LoginPage(rememberNavController())
+}
+
+private fun validateEmail(email: String): Boolean {
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(email.toString()).matches()
+}
+
+private fun validatePassword(password: String): Boolean {
+    return password.length >= 6
 }

@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -41,6 +42,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.R
 import com.example.budgettrackingapplication.composable.BackgroundDesign
+import com.example.budgettrackingapplication.composable.DatabaseHelper
+import com.example.budgettrackingapplication.composable.User
 import com.example.budgettrackingapplication.navigation.Screen
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
@@ -52,6 +55,8 @@ fun RegistrationPage(navController: NavController){
 
     val isEmailValid = remember { mutableStateOf(false) }
 
+    val isPasswordValid = remember { mutableStateOf(false) }
+
     val registrationerror = remember { mutableStateOf("") }
 
     val password = remember { mutableStateOf("") }
@@ -59,6 +64,12 @@ fun RegistrationPage(navController: NavController){
     val viewpassword = remember { mutableStateOf(false) }
     
     val termsChecked = remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
+    val databaseHelper = DatabaseHelper(context)
+
+    val isNotRegistered = registerUser(databaseHelper, email.value, password.value)
 
     BackgroundDesign()
 
@@ -269,11 +280,24 @@ fun RegistrationPage(navController: NavController){
             Button(
                 onClick = {
                     isEmailValid.value = isValidEmail(email.value)
-                    if (email.value.isNotEmpty() && isEmailValid.value) {
+                    isPasswordValid.value = isValidPassword(password.value)
 
+                    if (email.value.isNotEmpty() && password.value.isNotEmpty()) {
+                        if(!isEmailValid.value){
+                            registrationerror.value = "Please enter a valid email address"
+                        }
+                        else if(!isPasswordValid.value) {
+                            registrationerror.value = "Password should not be less than 6 characters"
+                        }
+                        else{
+                            if (isNotRegistered)
+                                registrationerror.value = "User registration successful"
+                            else
+                                registrationerror.value = "User already exists or an error occurred"
+                        }
                     }
                     else {
-                        registrationerror.value = "Email is invalid"
+                        registrationerror.value = "Please enter all information"
                     }
                 },
                 enabled = email.value.isNotEmpty() && password.value.isNotEmpty() && termsChecked.value,
@@ -343,12 +367,39 @@ fun RegistrationPage(navController: NavController){
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun RegistrationPagePreview(){
     RegistrationPage(rememberNavController())
 }
 
+//Email Validation
 fun isValidEmail(email: String): Boolean {
     return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+}
+
+//Password Length Validation
+private fun isValidPassword(password: String): Boolean {
+    return password.length >= 6
+}
+
+//Database entry
+private fun registerUser(databaseHelper: DatabaseHelper, email: String, password: String): Boolean {
+    // Validate if the user already exists
+    if (databaseHelper.isUserExists(email)) {
+        return false
+    }
+
+    // Generate a unique ID for the user (you can use a different approach in your app)
+    val userId = (System.currentTimeMillis() / 1000).toInt()
+
+    // Create a new User instance
+    val user = User(userId, email, password)
+
+    // Add the user to the database
+    val insertedRowId = databaseHelper.addUser(user)
+
+    // Return true if the user was successfully registered
+    return insertedRowId != -1L
 }

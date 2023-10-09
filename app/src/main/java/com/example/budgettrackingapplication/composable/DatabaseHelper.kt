@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import androidx.compose.runtime.MutableState
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -42,5 +43,30 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val exists = cursor.count > 0
         cursor.close()
         return exists
+    }
+    fun checkCredentials(email: String, password: String): Boolean {
+        val query = "SELECT * FROM $TABLE_USERS WHERE $COLUMN_EMAIL = ? AND $COLUMN_PASSWORD = ?"
+        val cursor = readableDatabase.rawQuery(query, arrayOf(email, password))
+        val exists = cursor.count > 0
+        cursor.close()
+        return exists
+    }
+
+    fun getUserByEmail(email: String): User? {
+        val query = "SELECT * FROM $TABLE_USERS WHERE $COLUMN_EMAIL = ?"
+        val cursor = readableDatabase.rawQuery(query, arrayOf(email))
+        val user = if (cursor.moveToFirst()) {
+            val idIndex = cursor.getColumnIndex(COLUMN_ID)
+            val passwordIndex = cursor.getColumnIndex(COLUMN_PASSWORD)
+
+            val id = cursor.getLong(idIndex)
+            val password = cursor.getString(passwordIndex)
+
+            User(id.toInt(), email, password)
+        } else {
+            null
+        }
+        cursor.close()
+        return user
     }
 }
