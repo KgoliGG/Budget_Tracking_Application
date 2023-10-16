@@ -9,5 +9,6 @@ package com.example.budgettrackingapplication.navigation
 enum class Screen{
     LandingPage,
     RegistrationPage,
-    LoginPage
+    LoginPage,
+    UserSetup
 }

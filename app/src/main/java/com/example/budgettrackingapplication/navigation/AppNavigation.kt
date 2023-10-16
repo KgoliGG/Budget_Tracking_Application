@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.composable.screens.LandingPage
 import com.example.budgettrackingapplication.composable.screens.LoginPage
 import com.example.budgettrackingapplication.composable.screens.RegistrationPage
+import com.example.budgettrackingapplication.composable.screens.UserSetup
 
 
 @Composable
@@ -25,6 +26,9 @@ fun AppNavigation(){
         }
         composable(route = Screen.LoginPage.name) {
             LoginPage(navController = navController)
+        }
+        composable(route = Screen.UserSetup.name) {
+            UserSetup(navController = navController)
         }
     }
 }

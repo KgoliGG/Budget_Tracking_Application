@@ -2,13 +2,14 @@ package com.example.budgettrackingapplication.composable
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_NAME = "Users.db"
+        private const val DATABASE_NAME = "users.sqlite"
         private const val DATABASE_VERSION = 1
 
         private const val TABLE_USERS = "users"
@@ -19,7 +20,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     override fun onCreate(db: SQLiteDatabase) {
         val createTableQuery = "CREATE TABLE $TABLE_USERS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_EMAIL TEXT, $COLUMN_PASSWORD TEXT)"
-        db.execSQL(createTableQuery)
+
+        try {
+            db.execSQL(createTableQuery)
+        }
+        catch (e: SQLException) {
+            print(e)
+        }
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {

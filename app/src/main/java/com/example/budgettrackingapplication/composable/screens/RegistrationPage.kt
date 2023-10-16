@@ -17,6 +17,7 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +45,8 @@ import com.example.budgettrackingapplication.R
 import com.example.budgettrackingapplication.composable.BackgroundDesign
 import com.example.budgettrackingapplication.composable.DatabaseHelper
 import com.example.budgettrackingapplication.composable.User
+import com.example.budgettrackingapplication.composable.components.ErrorMessage
+import com.example.budgettrackingapplication.composable.components.HeadingText
 import com.example.budgettrackingapplication.navigation.Screen
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
@@ -71,196 +74,276 @@ fun RegistrationPage(navController: NavController){
 
     val isNotRegistered = registerUser(databaseHelper, email.value, password.value)
 
-    BackgroundDesign()
+    Surface (
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        BackgroundDesign()
 
 //    val focusRequester = remember { FocusRequester() }
 
 
-    Column (
-        horizontalAlignment = Alignment.Start,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-    ){
-        Text(
-            text = "Create Account".uppercase(),
-            style = TextStyle(
-                fontSize = 60.sp,
-                fontFamily = montserrat,
-                fontWeight = FontWeight(700),
-                color = Color(0XFFFFFFFF),
-            ),
-            modifier = Modifier
-                .padding(top = 100.dp)
-        )
-
-        Spacer(
-            modifier = Modifier.padding(10.dp)
-        )
-        Column(
+        Column (
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
                 .fillMaxSize()
+                .padding(
+                    start = 20.dp,
+                    top = 100.dp,
+                    end = 20.dp,
+                    bottom = 50.dp
+                )
+        ){
+            HeadingText(value = "Create Account",
+                modifier = Modifier,
+                style = TextStyle()
+            )
+
+            Spacer(
+                modifier = Modifier.padding(10.dp)
+            )
+            Column(
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier
+                    .fillMaxSize()
 //                .clip(RoundedCornerShape(
 //                    topStart = 30.dp,
 //                    bottomEnd = 30.dp
 //                )
 //                )
 
-        ) {
+            ) {
 
 //Email Input
-            OutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp),
-                value = email.value,
-                onValueChange = { email.value = it },
-                label = {
-                    Text(
-                        text = "Email Address",
-                        style = TextStyle(
-                            color = Color.White,
-                            fontFamily = montserrat,
-                            fontWeight = FontWeight(400),
-                            fontSize = 16.sp,
-                            letterSpacing = .24.sp
-                        ),
-                        modifier = Modifier.padding()
-                    )
-                },
-                placeholder = {
-                    Text(
-                        text = "",
-                        style = TextStyle(
-                            color = Color.White,
-                            fontFamily = montserrat,
-                            fontWeight = FontWeight(400),
-                            letterSpacing = .24.sp
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp),
+                    value = email.value,
+                    onValueChange = { email.value = it },
+                    label = {
+                        Text(
+                            text = "Email Address",
+                            style = TextStyle(
+                                color = Color.White,
+                                fontFamily = montserrat,
+                                fontWeight = FontWeight(400),
+                                fontSize = 16.sp,
+                                letterSpacing = .24.sp
+                            ),
+                            modifier = Modifier.padding()
                         )
-                    )
+                    },
+                    placeholder = {
+                        Text(
+                            text = "",
+                            style = TextStyle(
+                                color = Color.White,
+                                fontFamily = montserrat,
+                                fontWeight = FontWeight(400),
+                                letterSpacing = .24.sp
+                            )
+                        )
 
-                },
-                singleLine = true
-            )
+                    },
+                    singleLine = true
+                )
 
-            Spacer(
-                modifier = Modifier.padding(5.dp)
-            )
+                Spacer(
+                    modifier = Modifier.padding(5.dp)
+                )
 
 //Password Input
-            OutlinedTextField(
-                value = password.value,
-                onValueChange = { password.value = it },
-                trailingIcon = {
-                    IconButton(onClick = {
-                        viewpassword.value = !viewpassword.value
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.password_eye),
-                            contentDescription = null)
+                OutlinedTextField(
+                    value = password.value,
+                    onValueChange = { password.value = it },
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            viewpassword.value = !viewpassword.value
+                        }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.password_eye),
+                                contentDescription = null)
+                        }
+                    },
+                    label = {
+                        Text(
+                            text = "Password",
+                            style = TextStyle(
+                                color = Color.White,
+                                fontFamily = montserrat,
+                                fontWeight = FontWeight(400),
+                                fontSize = 16.sp,
+                                letterSpacing = .24.sp
+                            )
+                        )
+                    },
+                    placeholder = {
+                        Text(
+                            text = "",
+                            style = TextStyle(
+                                color = Color.White,
+                                fontFamily = montserrat,
+                                fontWeight = FontWeight(400),
+                                letterSpacing = .24.sp
+                            )
+                        )
+
+                    },
+                    singleLine = true,
+                    visualTransformation = if (viewpassword.value)
+                    {
+                        VisualTransformation.None
                     }
-                },
-                label = {
-                    Text(
-                        text = "Password",
-                        style = TextStyle(
-                            color = Color.White,
-                            fontFamily = montserrat,
-                            fontWeight = FontWeight(400),
-                            fontSize = 16.sp,
-                            letterSpacing = .24.sp
-                        )
-                    )
-                },
-                placeholder = {
-                    Text(
-                        text = "",
-                        style = TextStyle(
-                            color = Color.White,
-                            fontFamily = montserrat,
-                            fontWeight = FontWeight(400),
-                            letterSpacing = .24.sp
-                        )
-                    )
-
-                },
-                singleLine = true,
-                visualTransformation = if (viewpassword.value)
-                {
-                    VisualTransformation.None
-                }
-                else
-                {
-                    PasswordVisualTransformation()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 10.dp)
-                    .alpha(1f)
-            )
-
-            Spacer(
-                modifier = Modifier.padding(10.dp)
-            )
-
-            Row (
-                verticalAlignment = Alignment.Top,
-//                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-//Registration Errors
-            Text(
-                    text = registrationerror.value,
-                    style = TextStyle(
-                        color = Color.Red,
-                        fontFamily = montserrat,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight(500)
-                    ),
+                    else
+                    {
+                        PasswordVisualTransformation()
+                    },
                     modifier = Modifier
-                        .padding(start = 5.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(top = 10.dp)
+                        .alpha(1f)
                 )
-            }
+
+                Spacer(
+                    modifier = Modifier.padding(10.dp)
+                )
+
+                Row (
+                    verticalAlignment = Alignment.Top,
+                    modifier = Modifier
+                        .padding(top = 60.dp)
+//                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+//Registration Errors
+                    ErrorMessage(value = registrationerror.value)
+                }
 
 //Checkbox for Terms and Conditions
-            Spacer(
-                modifier = Modifier
-                    .padding(40.dp)
-                    .fillMaxWidth()
-            )
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Checkbox(
-                    checked = termsChecked.value,
-                    onCheckedChange = { termsChecked.value = it},
-                    colors = CheckboxDefaults.colors(Color.White)
+                Spacer(
+                    modifier = Modifier
+                        .padding(40.dp)
+                        .fillMaxWidth()
                 )
 
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Checkbox(
+                        checked = termsChecked.value,
+                        onCheckedChange = { termsChecked.value = it},
+                        colors = CheckboxDefaults.colors(Color.White)
+                    )
+
+                    ClickableText(text = buildAnnotatedString {
+                        append("I have read ")
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.White,
+                            )
+                        ) {
+                            append("Terms and Condition")
+                        }
+                        append(" and ")
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.White,
+                            )
+                        ) {
+                            append("Privacy policy")
+                        }
+                    },
+                        onClick = {
+                            termsChecked.value = true
+                        },
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = montserrat,
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFFFFFFFF),
+                            letterSpacing = 0.2.sp,
+                        )
+                    )
+                }
+
+                Spacer(
+                    modifier = Modifier.padding(10.dp)
+                )
+
+//Login Button
+                Button(
+                    onClick = {
+                        isEmailValid.value = isValidEmail(email.value)
+                        isPasswordValid.value = isValidPassword(password.value)
+
+                        if (email.value.isNotEmpty() && password.value.isNotEmpty()) {
+                            if(!isEmailValid.value){
+                                registrationerror.value = "Please enter a valid email address"
+                            }
+                            else if(!isPasswordValid.value) {
+                                registrationerror.value = "Password should not be less than 6 characters"
+                            }
+                            else{
+                                if (isNotRegistered)
+                                    navController.navigate(
+                                        route = Screen.LoginPage.name
+                                    )
+                                else
+                                    registrationerror.value = "User already exists or an error occurred"
+                            }
+                        }
+                        else {
+                            registrationerror.value = "Please enter all information"
+                        }
+                    },
+                    enabled = email.value.isNotEmpty() && password.value.isNotEmpty() && termsChecked.value,
+                    colors = ButtonDefaults.buttonColors(Color(0xFF4F517D)),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 10.dp,
+                        pressedElevation = 15.dp,
+                        disabledElevation = 0.dp
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+
+                ) {
+                    Text(
+                        text = "Create Account".uppercase(),
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = montserrat,
+                            fontWeight = FontWeight(700),
+                            color = Color(0xFFFFFFFF),
+                            textAlign = TextAlign.Center,
+                            letterSpacing = 1.6.sp,
+                        )
+                    )
+
+                }
+
+                Spacer(
+                    modifier = Modifier.padding(10.dp)
+                )
+//Create Account Button
                 ClickableText(text = buildAnnotatedString {
-                    append("I have read ")
+                    append("Already have and account? ")
                     withStyle(
                         style = SpanStyle(
                             color = Color.White,
                         )
                     ) {
-                        append("Terms and Condition")
-                    }
-                    append(" and ")
-                    withStyle(
-                        style = SpanStyle(
-                            color = Color.White,
-                        )
-                    ) {
-                        append("Privacy policy")
+                        append("Login")
                     }
                 },
                     onClick = {
-                        termsChecked.value = true
+                        navController.navigate(
+                            route = Screen.LoginPage.name
+                        )
+
                     },
                     style = TextStyle(
                         fontSize = 14.sp,
@@ -268,102 +351,18 @@ fun RegistrationPage(navController: NavController){
                         fontWeight = FontWeight(600),
                         color = Color(0xFFFFFFFF),
                         letterSpacing = 0.2.sp,
-                    )
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
                 )
-            }
 
-            Spacer(
-                modifier = Modifier.padding(10.dp)
-            )
-
-//Login Button
-            Button(
-                onClick = {
-                    isEmailValid.value = isValidEmail(email.value)
-                    isPasswordValid.value = isValidPassword(password.value)
-
-                    if (email.value.isNotEmpty() && password.value.isNotEmpty()) {
-                        if(!isEmailValid.value){
-                            registrationerror.value = "Please enter a valid email address"
-                        }
-                        else if(!isPasswordValid.value) {
-                            registrationerror.value = "Password should not be less than 6 characters"
-                        }
-                        else{
-                            if (isNotRegistered)
-                                registrationerror.value = "User registration successful"
-                            else
-                                registrationerror.value = "User already exists or an error occurred"
-                        }
-                    }
-                    else {
-                        registrationerror.value = "Please enter all information"
-                    }
-                },
-                enabled = email.value.isNotEmpty() && password.value.isNotEmpty() && termsChecked.value,
-                colors = ButtonDefaults.buttonColors(Color(0xFF4F517D)),
-                shape = RoundedCornerShape(10.dp),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 10.dp,
-                    pressedElevation = 15.dp,
-                    disabledElevation = 0.dp
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-
-            ) {
-                Text(
-                    text = "Create Account".uppercase(),
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = montserrat,
-                        fontWeight = FontWeight(700),
-                        color = Color(0xFFFFFFFF),
-                        textAlign = TextAlign.Center,
-                        letterSpacing = 1.6.sp,
-                    )
+                Spacer(
+                    modifier = Modifier.padding(5.dp)
                 )
 
             }
-
-            Spacer(
-                modifier = Modifier.padding(10.dp)
-            )
-//Create Account Button
-            ClickableText(text = buildAnnotatedString {
-                append("Already have and account? ")
-                withStyle(
-                    style = SpanStyle(
-                        color = Color.White,
-                    )
-                ) {
-                    append("Login")
-                }
-            },
-                onClick = {
-                    navController.navigate(
-                        route = Screen.LoginPage.name
-                    )
-
-                },
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontFamily = montserrat,
-                    fontWeight = FontWeight(600),
-                    color = Color(0xFFFFFFFF),
-                    letterSpacing = 0.2.sp,
-                    textAlign = TextAlign.Center
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-            )
-
-            Spacer(
-                modifier = Modifier.padding(5.dp)
-            )
-
         }
     }
 }
