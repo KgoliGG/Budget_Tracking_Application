@@ -19,7 +19,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        val createTableQuery = "CREATE TABLE $TABLE_USERS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_EMAIL TEXT, $COLUMN_PASSWORD TEXT)"
+            val createTableQuery = "CREATE TABLE $TABLE_USERS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_EMAIL TEXT, $COLUMN_PASSWORD TEXT)"
 
         try {
             db.execSQL(createTableQuery)
@@ -35,12 +35,33 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         onCreate(db)
     }
 
-    fun addUser(user: User): Long {
+    fun addUser(user: User): Long
+    {
         val values = ContentValues().apply {
+            put(COLUMN_ID, user.id)
             put(COLUMN_EMAIL, user.email)
             put(COLUMN_PASSWORD, user.password)
         }
         return writableDatabase.insert(TABLE_USERS, null, values)
+    }
+
+    fun checkCredentials(user: LoginUser): Boolean {
+//        val query = "SELECT * FROM $TABLE_USERS WHERE $COLUMN_EMAIL = ? AND $COLUMN_PASSWORD = ?"
+//        val cursor = readableDatabase.rawQuery(query, arrayOf(user.email, user.password))
+//        val exists = cursor.count > 0
+//        cursor.close()
+//        return exists
+        val p0 = this.writableDatabase
+        val query = "SELECT * FROM $TABLE_USERS WHERE $COLUMN_EMAIL = '${user.email}' AND $COLUMN_PASSWORD = '${user.password}'"
+        val cursor = p0.rawQuery(query, null)
+        if (cursor.count<=0){
+            cursor.close()
+            return false
+        }
+        else{
+            cursor.close()
+            return true
+        }
     }
 
     fun isUserExists(email: String): Boolean {
@@ -50,13 +71,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         cursor.close()
         return exists
     }
-    fun checkCredentials(email: String, password: String): Boolean {
-        val query = "SELECT * FROM $TABLE_USERS WHERE $COLUMN_EMAIL = ? AND $COLUMN_PASSWORD = ?"
-        val cursor = readableDatabase.rawQuery(query, arrayOf(email, password))
-        val exists = cursor.count > 0
-        cursor.close()
-        return exists
-    }
+
 
     fun getUserByEmail(email: String): User? {
         val query = "SELECT * FROM $TABLE_USERS WHERE $COLUMN_EMAIL = ?"

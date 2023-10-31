@@ -7,7 +7,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.composable.screens.LandingPage
 import com.example.budgettrackingapplication.composable.screens.LoginPage
+import com.example.budgettrackingapplication.composable.screens.PrivacyPoliciesScreen
 import com.example.budgettrackingapplication.composable.screens.RegistrationPage
+import com.example.budgettrackingapplication.composable.screens.TermsAndConditionScreen
 import com.example.budgettrackingapplication.composable.screens.UserSetup
 
 
@@ -29,6 +31,12 @@ fun AppNavigation(){
         }
         composable(route = Screen.UserSetup.name) {
             UserSetup(navController = navController)
+        }
+        composable(route = Screen.TermsAndCondition.name){
+            TermsAndConditionScreen(navController = navController)
+        }
+        composable(route = Screen.PrivacyPolicies.name){
+            PrivacyPoliciesScreen(navController = navController)
         }
     }
 }

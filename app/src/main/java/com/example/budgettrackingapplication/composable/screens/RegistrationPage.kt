@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,8 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -45,6 +44,7 @@ import com.example.budgettrackingapplication.R
 import com.example.budgettrackingapplication.composable.BackgroundDesign
 import com.example.budgettrackingapplication.composable.DatabaseHelper
 import com.example.budgettrackingapplication.composable.User
+import com.example.budgettrackingapplication.composable.components.CheckboxComponentes
 import com.example.budgettrackingapplication.composable.components.ErrorMessage
 import com.example.budgettrackingapplication.composable.components.HeadingText
 import com.example.budgettrackingapplication.navigation.Screen
@@ -64,15 +64,13 @@ fun RegistrationPage(navController: NavController){
 
     val password = remember { mutableStateOf("") }
 
-    val viewpassword = remember { mutableStateOf(false) }
-    
+    val viewPassword = remember { mutableStateOf(false) }
+
     val termsChecked = remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
     val databaseHelper = DatabaseHelper(context)
-
-    val isNotRegistered = registerUser(databaseHelper, email.value, password.value)
 
     Surface (
         modifier = Modifier
@@ -92,7 +90,9 @@ fun RegistrationPage(navController: NavController){
                     top = 100.dp,
                     end = 20.dp,
                     bottom = 50.dp
-                )
+                ),
+            verticalArrangement = Arrangement.Center
+
         ){
             HeadingText(value = "Create Account",
                 modifier = Modifier,
@@ -106,11 +106,6 @@ fun RegistrationPage(navController: NavController){
                 horizontalAlignment = Alignment.Start,
                 modifier = Modifier
                     .fillMaxSize()
-//                .clip(RoundedCornerShape(
-//                    topStart = 30.dp,
-//                    bottomEnd = 30.dp
-//                )
-//                )
 
             ) {
 
@@ -158,12 +153,15 @@ fun RegistrationPage(navController: NavController){
                     value = password.value,
                     onValueChange = { password.value = it },
                     trailingIcon = {
-                        IconButton(onClick = {
-                            viewpassword.value = !viewpassword.value
-                        }) {
+                        IconButton(
+                            onClick = {
+                                viewPassword.value = !viewPassword.value
+                            }
+                        ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.password_eye),
-                                contentDescription = null)
+                                contentDescription = null
+                            )
                         }
                     },
                     label = {
@@ -191,7 +189,7 @@ fun RegistrationPage(navController: NavController){
 
                     },
                     singleLine = true,
-                    visualTransformation = if (viewpassword.value)
+                    visualTransformation = if (viewPassword.value)
                     {
                         VisualTransformation.None
                     }
@@ -206,67 +204,44 @@ fun RegistrationPage(navController: NavController){
                 )
 
                 Spacer(
-                    modifier = Modifier.padding(10.dp)
+                    modifier = Modifier.padding(5.dp)
                 )
 
                 Row (
                     verticalAlignment = Alignment.Top,
                     modifier = Modifier
-                        .padding(top = 60.dp)
+                        .padding(top = 10.dp)
 //                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 //Registration Errors
                     ErrorMessage(value = registrationerror.value)
                 }
 
-//Checkbox for Terms and Conditions
                 Spacer(
                     modifier = Modifier
-                        .padding(40.dp)
                         .fillMaxWidth()
+                        .fillMaxHeight(.3f)
                 )
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Checkbox(
-                        checked = termsChecked.value,
-                        onCheckedChange = { termsChecked.value = it},
-                        colors = CheckboxDefaults.colors(Color.White)
-                    )
+//Checkbox for Terms and Conditions
 
-                    ClickableText(text = buildAnnotatedString {
-                        append("I have read ")
-                        withStyle(
-                            style = SpanStyle(
-                                color = Color.White,
+                CheckboxComponentes(onSelectedText = {
+                    when (it) {
+                        ("Terms of Use") -> {
+                            navController.navigate(
+                                route = Screen.TermsAndCondition.name
                             )
-                        ) {
-                            append("Terms and Condition")
                         }
-                        append(" and ")
-                        withStyle(
-                            style = SpanStyle(
-                                color = Color.White,
+                        ("Privacy Policies") -> {
+                            navController.navigate(
+                                route = Screen.PrivacyPolicies.name
                             )
-                        ) {
-                            append("Privacy policy")
                         }
-                    },
-                        onClick = {
+                        else -> {
                             termsChecked.value = true
-                        },
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = montserrat,
-                            fontWeight = FontWeight(600),
-                            color = Color(0xFFFFFFFF),
-                            letterSpacing = 0.2.sp,
-                        )
-                    )
-                }
+                        }
+                    }
+                })
 
                 Spacer(
                     modifier = Modifier.padding(10.dp)
@@ -280,25 +255,31 @@ fun RegistrationPage(navController: NavController){
 
                         if (email.value.isNotEmpty() && password.value.isNotEmpty()) {
                             if(!isEmailValid.value){
+//                                error = false
                                 registrationerror.value = "Please enter a valid email address"
                             }
                             else if(!isPasswordValid.value) {
                                 registrationerror.value = "Password should not be less than 6 characters"
                             }
                             else{
-                                if (isNotRegistered)
-                                    navController.navigate(
-                                        route = Screen.LoginPage.name
-                                    )
-                                else
-                                    registrationerror.value = "User already exists or an error occurred"
+                                val userExists = databaseHelper.isUserExists(email.value)
+
+                                if (userExists) {
+                                    registrationerror.value = "User already exists"
+                                } else {
+                                    val userId = generateUserId()
+                                    val newUser = User(userId, email.value, password.value)
+                                    databaseHelper.addUser(newUser)
+                                    navController.navigate("LoginPage")
+                                }
                             }
+
                         }
                         else {
                             registrationerror.value = "Please enter all information"
                         }
                     },
-                    enabled = email.value.isNotEmpty() && password.value.isNotEmpty() && termsChecked.value,
+//                    enabled = email.value.isNotEmpty() && password.value.isNotEmpty() && termsChecked.value,
                     colors = ButtonDefaults.buttonColors(Color(0xFF4F517D)),
                     shape = RoundedCornerShape(10.dp),
                     elevation = ButtonDefaults.buttonElevation(
@@ -383,22 +364,6 @@ private fun isValidPassword(password: String): Boolean {
     return password.length >= 6
 }
 
-//Database entry
-private fun registerUser(databaseHelper: DatabaseHelper, email: String, password: String): Boolean {
-    // Validate if the user already exists
-    if (databaseHelper.isUserExists(email)) {
-        return false
-    }
-
-    // Generate a unique ID for the user (you can use a different approach in your app)
-    val userId = (System.currentTimeMillis() / 1000).toInt()
-
-    // Create a new User instance
-    val user = User(userId, email, password)
-
-    // Add the user to the database
-    val insertedRowId = databaseHelper.addUser(user)
-
-    // Return true if the user was successfully registered
-    return insertedRowId != -1L
+private fun generateUserId(): Int {
+    return System.currentTimeMillis().toInt()
 }

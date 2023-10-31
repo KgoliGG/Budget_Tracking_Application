@@ -1,15 +1,26 @@
 package com.example.budgettrackingapplication.composable.components
 
-import androidx.compose.foundation.layout.Spacer
+import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.budgettrackingapplication.ui.theme.montserrat
@@ -59,11 +70,129 @@ fun ErrorMessage(value: String){
     )
 }
 
+//@Composable
+//fun CheckboxComponentes (navController: NavController) {
+//
+//    val checkedState = remember {
+//        mutableStateOf(false)
+//    }
+//
+//
+//
+//    Row(
+//        verticalAlignment = Alignment.CenterVertically,
+//        horizontalArrangement = Arrangement.Start,
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(top = 50.dp)
+//    ) {
+//        Checkbox(
+//            checked = checkedState.value,
+//            onCheckedChange = { checkedState.value = it},
+//            colors = CheckboxDefaults.colors(Color.White)
+//        )
+//
+//        ClickableText(
+//            text = buildAnnotatedString {
+//            append(
+//                text = "I have read all ",
+//            )
+//            withStyle(
+//                style = SpanStyle(
+//                    color = Color.White,
+//                )
+//            ) {
+//                append("Terms and Condition")
+//            }
+//        },
+//            onClick = {
+//                checkedState.value = true
+//            },
+//            style = TextStyle(
+//                fontSize = 14.sp,
+//                fontFamily = montserrat,
+//                fontWeight = FontWeight(600),
+//                color = Color(0xFFFFFFFF),
+//                letterSpacing = 0.2.sp,
+//            )
+//        )
+//    }
+//}
+
 @Composable
-fun BaseSpacer(){
-    Spacer(
+fun CheckboxComponentes (onSelectedText: (String) -> Unit) {
+    Row (
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start,
         modifier = Modifier
-            .padding(40.dp)
             .fillMaxWidth()
+            .padding(top = 50.dp)
+    ) {
+        val checkedState = remember {
+            mutableStateOf(false)
+        }
+
+        Checkbox(
+            checked = checkedState.value,
+            onCheckedChange = {
+                checkedState.value = it
+            }
+        )
+
+        ClickableTextComponent(onSelectedText)
+
+    }
+}
+
+@Composable
+fun ClickableTextComponent(onSelectedText: (String) -> Unit){
+    val initialText = "I accept all the "
+    val termsText = "Terms of Use"
+    val and = " and "
+    val policyText = "Privacy Policies"
+
+    val annotatedString = buildAnnotatedString {
+        append(initialText)
+        withStyle(
+            style = SpanStyle(
+                color = Color.White,
+                textDecoration = TextDecoration.Underline
+            )
+        ){
+            pushStringAnnotation(tag = termsText, annotation = termsText)
+            append(termsText)
+        }
+        append(and)
+        withStyle(
+            style = SpanStyle(
+                color = Color.White,
+                textDecoration = TextDecoration.Underline
+            )
+        ){
+            pushStringAnnotation(tag = policyText, annotation = policyText)
+            append(policyText)
+        }
+    }
+    
+    ClickableText(
+        text = annotatedString,
+        onClick = {
+            offset ->
+            annotatedString.getStringAnnotations(offset,offset)
+                .firstOrNull()?.also {
+                    span ->
+                    Log.d("ClickableTextComponent","{$span}")
+                    if (span.item == termsText){
+                        onSelectedText(span.item)
+                    }
+                }
+        },
+        style = TextStyle(
+            fontSize = 14.sp,
+            fontFamily = montserrat,
+            fontWeight = FontWeight(600),
+            color = Color(0xFFFFFFFF),
+            letterSpacing = 0.2.sp
+        )
     )
 }

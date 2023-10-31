@@ -10,5 +10,7 @@ enum class Screen{
     LandingPage,
     RegistrationPage,
     LoginPage,
-    UserSetup
+    UserSetup,
+    TermsAndCondition,
+    PrivacyPolicies
 }

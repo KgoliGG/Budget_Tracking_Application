@@ -4,16 +4,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
@@ -31,14 +29,11 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,6 +42,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.R
 import com.example.budgettrackingapplication.composable.BackgroundDesign
 import com.example.budgettrackingapplication.composable.DatabaseHelper
+import com.example.budgettrackingapplication.composable.LoginUser
+import com.example.budgettrackingapplication.composable.components.CheckboxComponentes
 import com.example.budgettrackingapplication.composable.components.ErrorMessage
 import com.example.budgettrackingapplication.composable.components.HeadingText
 import com.example.budgettrackingapplication.composable.components.SubHeading
@@ -235,53 +232,73 @@ fun LoginPage(navController: NavController){
                     )
                 }
 
+                val checked = remember {
+                    mutableStateOf(true)
+                }
+
 
 //Checkbox for Terms and Conditions
                 Spacer(
-                    modifier = Modifier.padding(40.dp)
-                )
-
-                val checked = remember {
-                    mutableStateOf(false)
-                }
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 50.dp)
-                ) {
-                    Checkbox(
-                        checked = checked.value,
-                        onCheckedChange = { checked.value = it},
-                        colors = CheckboxDefaults.colors(Color.White)
-                    )
+                        .fillMaxHeight(.2f)
+                )
 
-                    ClickableText(text = buildAnnotatedString {
-                        append(
-                            text = "I have read all ",
-                        )
-                        withStyle(
-                            style = SpanStyle(
-                                color = Color.White,
+                CheckboxComponentes(onSelectedText = {
+                    when (it) {
+                        ("Terms of Use") -> {
+                            navController.navigate(
+                                route = Screen.TermsAndCondition.name
                             )
-                        ) {
-                            append("Terms and Condition")
                         }
-                    },
-                        onClick = {
+                        ("Privacy Policies") -> {
+                            navController.navigate(
+                                route = Screen.PrivacyPolicies.name
+                            )
+                        }
+                        else -> {
                             checked.value = true
-                        },
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = montserrat,
-                            fontWeight = FontWeight(600),
-                            color = Color(0xFFFFFFFF),
-                            letterSpacing = 0.2.sp,
-                        )
-                    )
-                }
+                        }
+                    }
+                })
+
+//                Row(
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.Start,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(top = 50.dp)
+//                ) {
+//                    Checkbox(
+//                        checked = checked.value,
+//                        onCheckedChange = { checked.value = it},
+//                        colors = CheckboxDefaults.colors(Color.White)
+//                    )
+//
+//                    ClickableText(text = buildAnnotatedString {
+//                        append(
+//                            text = "I have read all ",
+//                        )
+//                        withStyle(
+//                            style = SpanStyle(
+//                                color = Color.White,
+//                            )
+//                        ) {
+//                            append("Terms and Condition")
+//                        }
+//                    },
+//                        onClick = {
+//                            checked.value = true
+//                        },
+//                        style = TextStyle(
+//                            fontSize = 14.sp,
+//                            fontFamily = montserrat,
+//                            fontWeight = FontWeight(600),
+//                            color = Color(0xFFFFFFFF),
+//                            letterSpacing = 0.2.sp,
+//                        )
+//                    )
+//                }
 
                 Spacer(
                     modifier = Modifier.padding(10.dp)
@@ -321,6 +338,7 @@ fun LoginPage(navController: NavController){
                     onClick = {
                         val emailValue = email.value
                         val passwordValue = password.value
+                        val user = LoginUser(emailValue, passwordValue)
 
                         isEmailValid = validateEmail(emailValue)
                         isPasswordValid = validatePassword(passwordValue)
@@ -332,7 +350,7 @@ fun LoginPage(navController: NavController){
                             loginerror.value = "Password should be at least 6 characters"
                         }
                         else{
-                            val userExists = databaseHelper.checkCredentials(emailValue, passwordValue)
+                            val userExists = databaseHelper.checkCredentials(user)
                             if (userExists){
                                 navController.navigate(
                                     route = Screen.UserSetup.name
