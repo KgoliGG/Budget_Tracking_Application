@@ -245,20 +245,18 @@ fun LoginPage(navController: NavController){
                 )
 
                 CheckboxComponentes(onSelectedText = {
-                    when (it) {
-                        ("Terms of Use") -> {
-                            navController.navigate(
-                                route = Screen.TermsAndCondition.name
-                            )
-                        }
-                        ("Privacy Policies") -> {
-                            navController.navigate(
-                                route = Screen.PrivacyPolicies.name
-                            )
-                        }
-                        else -> {
-                            checked.value = true
-                        }
+                    if(it == ("Terms of Use")){
+                        navController.navigate(
+                            route = Screen.TermsAndCondition.name
+                        )
+                    }
+                    else if(it == ("Privacy Policies")){
+                        navController.navigate(
+                            route = Screen.PrivacyPolicies.name
+                        )
+                    }
+                    else{
+                        checked.value = true
                     }
                 })
 
