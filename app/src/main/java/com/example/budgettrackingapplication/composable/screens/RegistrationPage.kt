@@ -1,5 +1,6 @@
 package com.example.budgettrackingapplication.composable.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,6 +45,7 @@ import com.example.budgettrackingapplication.R
 import com.example.budgettrackingapplication.composable.BackgroundDesign
 import com.example.budgettrackingapplication.composable.DatabaseHelper
 import com.example.budgettrackingapplication.composable.User
+import com.example.budgettrackingapplication.composable.UserID
 import com.example.budgettrackingapplication.composable.components.CheckboxComponentes
 import com.example.budgettrackingapplication.composable.components.ErrorMessage
 import com.example.budgettrackingapplication.composable.components.HeadingText
@@ -225,23 +227,26 @@ fun RegistrationPage(navController: NavController){
 
 //Checkbox for Terms and Conditions
 
-                CheckboxComponentes(onSelectedText = {
-                    when (it) {
-                        ("Terms of Use") -> {
+                CheckboxComponentes(
+                    checked = termsChecked.value,
+                    onCheckedChange = { isChecked ->
+                        termsChecked.value = isChecked
+                    },
+                    onSelectedText = { selectedText ->
+                        if(selectedText == "Terms of Use"){
                             navController.navigate(
                                 route = Screen.TermsAndCondition.name
                             )
                         }
-                        ("Privacy Policies") -> {
+                        else //(selectedText == "Privacy Policies")
+                        {
                             navController.navigate(
                                 route = Screen.PrivacyPolicies.name
                             )
                         }
-                        else -> {
-                            termsChecked.value = true
-                        }
                     }
-                })
+
+                )
 
                 Spacer(
                     modifier = Modifier.padding(10.dp)
@@ -261,25 +266,29 @@ fun RegistrationPage(navController: NavController){
                             else if(!isPasswordValid.value) {
                                 registrationerror.value = "Password should not be less than 6 characters"
                             }
+//                            else if(!termsChecked.value){
+//                                registrationerror.value = "Please read and accept all Terms of Use and Privacy Policies"
+//                            }
                             else{
                                 val userExists = databaseHelper.isUserExists(email.value)
 
                                 if (userExists) {
                                     registrationerror.value = "User already exists"
                                 } else {
-                                    val userId = generateUserId()
-                                    val newUser = User(userId, email.value, password.value)
-                                    databaseHelper.addUser(newUser)
+                                    val userId = UserID(generateUserId())
+                                    val newUser = User(email.value, password.value)
+                                    databaseHelper.addUser(newUser,userId)
+                                    Toast.makeText(context, "User Created Successfully", Toast.LENGTH_SHORT).show()
                                     navController.navigate("LoginPage")
                                 }
                             }
-
+//                            Log.d("CheckedValue", "{${termsChecked}}")
                         }
                         else {
                             registrationerror.value = "Please enter all information"
                         }
                     },
-//                    enabled = email.value.isNotEmpty() && password.value.isNotEmpty() && termsChecked.value,
+                    enabled = email.value.isNotEmpty() && password.value.isNotEmpty() && termsChecked.value,
                     colors = ButtonDefaults.buttonColors(Color(0xFF4F517D)),
                     shape = RoundedCornerShape(10.dp),
                     elevation = ButtonDefaults.buttonElevation(

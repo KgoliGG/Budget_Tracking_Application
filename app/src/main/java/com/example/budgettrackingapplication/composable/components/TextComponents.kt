@@ -120,32 +120,33 @@ fun ErrorMessage(value: String){
 //}
 
 @Composable
-fun CheckboxComponentes (onSelectedText: (String) -> Unit) {
-    Row (
+fun CheckboxComponentes (
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    onSelectedText: (String) -> Unit) {
+
+    Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 50.dp)
     ) {
-        val checkedState = remember {
-            mutableStateOf(false)
-        }
-
         Checkbox(
-            checked = checkedState.value,
-            onCheckedChange = {
-                checkedState.value = it
-            }
+            checked = checked,
+            onCheckedChange = onCheckedChange
         )
-
-        ClickableTextComponent(onSelectedText)
-
+//        Log.d("Statechange", "{${checked}}")
+//        Log.d("Statechanged", "{${onCheckedChange}}")
+        ClickableTextComponent(
+            onSelectedText = onSelectedText,
+        )
     }
 }
 
+
 @Composable
-fun ClickableTextComponent(onSelectedText: (String) -> Unit){
+fun ClickableTextComponent(onSelectedText : (String) -> Unit){
     val initialText = "I accept all the "
     val termsText = "Terms of Use"
     val and = " and "
@@ -181,7 +182,7 @@ fun ClickableTextComponent(onSelectedText: (String) -> Unit){
             annotatedString.getStringAnnotations(offset,offset)
                 .firstOrNull()?.also {
                     span ->
-                    Log.d("ClickableTextComponent","{$span}")
+//                    Log.d("ClickableTextComponent","{$span}")
                     if (span.item == termsText){
                         onSelectedText(span.item)
                     }

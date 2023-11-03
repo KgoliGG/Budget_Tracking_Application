@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -16,10 +17,19 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_ID = "id"
         private const val COLUMN_EMAIL = "email"
         private const val COLUMN_PASSWORD = "password"
+        private const val COLUMN_NAME = "fullName"
+        private const val COLUMN_AGE = "age"
+        private const val COLUMN_GENDER = "gender"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-            val createTableQuery = "CREATE TABLE $TABLE_USERS ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_EMAIL TEXT, $COLUMN_PASSWORD TEXT)"
+            val createTableQuery = "CREATE TABLE $TABLE_USERS (" +
+                    "$COLUMN_ID INTEGER PRIMARY KEY," +
+                    "$COLUMN_EMAIL TEXT NOT NULL,"  +
+                    "$COLUMN_PASSWORD TEXT NOT NULL," +
+                    "$COLUMN_NAME TEXT," +
+                    "$COLUMN_AGE INT," +
+                    "$COLUMN_GENDER TEXT)"
 
         try {
             db.execSQL(createTableQuery)
@@ -35,24 +45,34 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         onCreate(db)
     }
 
-    fun addUser(user: User): Long
+    fun addUser(user: User, id: UserID): Long
     {
         val values = ContentValues().apply {
-            put(COLUMN_ID, user.id)
+            put(COLUMN_ID, id.id)
             put(COLUMN_EMAIL, user.email)
             put(COLUMN_PASSWORD, user.password)
         }
         return writableDatabase.insert(TABLE_USERS, null, values)
     }
 
-    fun checkCredentials(user: LoginUser): Boolean {
-//        val query = "SELECT * FROM $TABLE_USERS WHERE $COLUMN_EMAIL = ? AND $COLUMN_PASSWORD = ?"
-//        val cursor = readableDatabase.rawQuery(query, arrayOf(user.email, user.password))
-//        val exists = cursor.count > 0
-//        cursor.close()
-//        return exists
+    fun isUserExists(email: String): Boolean {
+        val query = "SELECT * FROM $TABLE_USERS WHERE $COLUMN_EMAIL = ?"
+        val cursor = readableDatabase.rawQuery(query, arrayOf(email))
+        val exists = cursor.count > 0
+        cursor.close()
+        return exists
+    }
+
+    fun checkCredentials(loginuser: LoginUser): Boolean {
         val p0 = this.writableDatabase
-        val query = "SELECT * FROM $TABLE_USERS WHERE $COLUMN_EMAIL = '${user.email}' AND $COLUMN_PASSWORD = '${user.password}'"
+        val query = "SELECT " +
+                "*" +
+                "FROM " +
+                "$TABLE_USERS " +
+                "WHERE " +
+                "$COLUMN_EMAIL = '${loginuser.email}' " +
+                "AND " +
+                "$COLUMN_PASSWORD = '${loginuser.password}'"
         val cursor = p0.rawQuery(query, null)
         if (cursor.count<=0){
             cursor.close()
@@ -64,30 +84,18 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
     }
 
-    fun isUserExists(email: String): Boolean {
-        val query = "SELECT * FROM $TABLE_USERS WHERE $COLUMN_EMAIL = ?"
-        val cursor = readableDatabase.rawQuery(query, arrayOf(email))
-        val exists = cursor.count > 0
-        cursor.close()
-        return exists
-    }
+    fun updateUserData(id: UserID,user: UserDetails) : Int {
+        val values = ContentValues().apply {
+            put(COLUMN_NAME, user.fullName)
+            put(COLUMN_AGE, user.age)
+            put(COLUMN_PASSWORD, user.gender)
 
-
-    fun getUserByEmail(email: String): User? {
-        val query = "SELECT * FROM $TABLE_USERS WHERE $COLUMN_EMAIL = ?"
-        val cursor = readableDatabase.rawQuery(query, arrayOf(email))
-        val user = if (cursor.moveToFirst()) {
-            val idIndex = cursor.getColumnIndex(COLUMN_ID)
-            val passwordIndex = cursor.getColumnIndex(COLUMN_PASSWORD)
-
-            val id = cursor.getLong(idIndex)
-            val password = cursor.getString(passwordIndex)
-
-            User(id.toInt(), email, password)
-        } else {
-            null
         }
-        cursor.close()
-        return user
+        val whereClause = "$COLUMN_ID = ?"
+        Log.d("ID Values","{${whereClause}}")
+        val whereArgs = arrayOf(id.id.toString())
+
+        return writableDatabase.update(TABLE_USERS, values, whereClause, whereArgs)
     }
+
 }

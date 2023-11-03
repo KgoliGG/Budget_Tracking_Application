@@ -1,5 +1,6 @@
 package com.example.budgettrackingapplication.composable.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -71,6 +72,8 @@ fun LoginPage(navController: NavController){
         var isEmailValid by remember { mutableStateOf(true) }
 
         var isPasswordValid by remember { mutableStateOf(true) }
+
+        val checked = remember { mutableStateOf(false) }
 
         val context = LocalContext.current
 
@@ -232,10 +235,6 @@ fun LoginPage(navController: NavController){
                     )
                 }
 
-                val checked = remember {
-                    mutableStateOf(true)
-                }
-
 
 //Checkbox for Terms and Conditions
                 Spacer(
@@ -244,21 +243,27 @@ fun LoginPage(navController: NavController){
                         .fillMaxHeight(.2f)
                 )
 
-                CheckboxComponentes(onSelectedText = {
-                    if(it == ("Terms of Use")){
-                        navController.navigate(
-                            route = Screen.TermsAndCondition.name
-                        )
+
+                CheckboxComponentes(
+                    checked = checked.value,
+                    onCheckedChange = { isChecked ->
+                        checked.value = isChecked
+                    },
+                    onSelectedText = { selectedText ->
+                        if(selectedText == "Terms of Use"){
+                            navController.navigate(
+                                route = Screen.TermsAndCondition.name
+                            )
+                        }
+                        else //(selectedText == "Privacy Policies")
+                        {
+                            navController.navigate(
+                                route = Screen.PrivacyPolicies.name
+                            )
+                        }
                     }
-                    else if(it == ("Privacy Policies")){
-                        navController.navigate(
-                            route = Screen.PrivacyPolicies.name
-                        )
-                    }
-                    else{
-                        checked.value = true
-                    }
-                })
+
+                )
 
 //                Row(
 //                    verticalAlignment = Alignment.CenterVertically,
@@ -334,15 +339,14 @@ fun LoginPage(navController: NavController){
 //Login Button
                 Button(
                     onClick = {
-                        val emailValue = email.value
-                        val passwordValue = password.value
-                        val user = LoginUser(emailValue, passwordValue)
 
-                        isEmailValid = validateEmail(emailValue)
-                        isPasswordValid = validatePassword(passwordValue)
+                        val user = LoginUser(email.value, password.value)
+
+                        isEmailValid = validateEmail(email.value)
+                        isPasswordValid = validatePassword(password.value)
 
                         if (!isEmailValid){
-                            loginerror.value = "Invalid Email"
+                            loginerror.value = "Invalid Email Format"
                         }
                         else if (!isPasswordValid){
                             loginerror.value = "Password should be at least 6 characters"
@@ -350,12 +354,13 @@ fun LoginPage(navController: NavController){
                         else{
                             val userExists = databaseHelper.checkCredentials(user)
                             if (userExists){
+                                Toast.makeText(context, "Logged in Successfully", Toast.LENGTH_SHORT).show()
                                 navController.navigate(
                                     route = Screen.UserSetup.name
                                 )
                             }
                             else{
-                                loginerror.value = "User doesn't exist"
+                                loginerror.value = "Please check your Credentials"
                             }
                         }
 

@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -31,6 +32,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.composable.BackgroundDesign
+import com.example.budgettrackingapplication.composable.DatabaseHelper
+import com.example.budgettrackingapplication.composable.UserDetails
+import com.example.budgettrackingapplication.composable.UserID
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
 @Composable
@@ -42,9 +46,13 @@ fun UserSetup(navController: NavController){
 
     val userage = remember { mutableStateOf("") }
 
-    val radioOptions = listOf("Male", "Female", "Woke")
+    val genderOptions = listOf("Male", "Female", "Woke")
 
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[1] ) }
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf(genderOptions[0] ) }
+
+    val context = LocalContext.current
+
+    val databaseHelper = DatabaseHelper(context)
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -176,7 +184,7 @@ fun UserSetup(navController: NavController){
                 .padding(5.dp)
         )
 
-        radioOptions.forEach { text ->
+        genderOptions.forEach { text ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -215,6 +223,10 @@ fun UserSetup(navController: NavController){
 
         Button(
             onClick = {
+                val user = UserDetails(fullName = username.value, age = userage, gender = selectedOption)
+
+                // Update user data
+                val rowsUpdated = databaseHelper.updateUserData(user)
 
             },
 //            enabled = email.value.isNotEmpty() && password.value.isNotEmpty() && termsChecked.value,
@@ -231,7 +243,7 @@ fun UserSetup(navController: NavController){
 
         ) {
             Text(
-                text = "Create Account".uppercase(),
+                text = "Continue".uppercase(),
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontFamily = montserrat,
