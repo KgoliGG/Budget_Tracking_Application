@@ -1,5 +1,7 @@
 package com.example.budgettrackingapplication.composable.screens
 
+import android.content.Context
+import android.service.autofill.UserData
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,12 +40,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.core.Cache
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.R
 import com.example.budgettrackingapplication.composable.BackgroundDesign
 import com.example.budgettrackingapplication.composable.DatabaseHelper
 import com.example.budgettrackingapplication.composable.LoginUser
+import com.example.budgettrackingapplication.composable.UserID
 import com.example.budgettrackingapplication.composable.components.CheckboxComponentes
 import com.example.budgettrackingapplication.composable.components.ErrorMessage
 import com.example.budgettrackingapplication.composable.components.HeadingText
@@ -355,6 +359,7 @@ fun LoginPage(navController: NavController){
                             val userExists = databaseHelper.checkCredentials(user)
                             if (userExists){
                                 Toast.makeText(context, "Logged in Successfully", Toast.LENGTH_SHORT).show()
+
                                 navController.navigate(
                                     route = Screen.UserSetup.name
                                 )
@@ -409,4 +414,18 @@ private fun validateEmail(email: String): Boolean {
 
 private fun validatePassword(password: String): Boolean {
     return password.length >= 6
+}
+
+// Function to store the user ID in cache
+fun storeUserIDInCache(context: Context, userID: String) {
+    val sharedPreferences = context.getSharedPreferences("UserCache", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putString("userID", userID)
+    editor.apply()
+}
+
+// Function to retrieve the user ID from cache
+fun getUserIDFromCache(context: Context): String? {
+    val sharedPreferences = context.getSharedPreferences("UserCache", Context.MODE_PRIVATE)
+    return sharedPreferences.getString("userID", null)
 }

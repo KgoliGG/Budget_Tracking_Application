@@ -33,8 +33,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.composable.BackgroundDesign
 import com.example.budgettrackingapplication.composable.DatabaseHelper
+import com.example.budgettrackingapplication.composable.LoginUser
 import com.example.budgettrackingapplication.composable.UserDetails
-import com.example.budgettrackingapplication.composable.UserID
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
 @Composable
@@ -44,7 +44,7 @@ fun UserSetup(navController: NavController){
 
     val username = remember { mutableStateOf("") }
 
-    val userage = remember { mutableStateOf("") }
+    var userage = remember { mutableStateOf("") }
 
     val genderOptions = listOf("Male", "Female", "Woke")
 
@@ -223,10 +223,10 @@ fun UserSetup(navController: NavController){
 
         Button(
             onClick = {
-                val user = UserDetails(fullName = username.value, age = userage, gender = selectedOption)
-
+                val user = UserDetails(fullName = username.value, age = userage.value.toInt(), gender = selectedOption)
+                val userid = databaseHelper.fetchuserid()
                 // Update user data
-                val rowsUpdated = databaseHelper.updateUserData(user)
+                val rowsUpdated = databaseHelper.updateUserData(userid, user)
 
             },
 //            enabled = email.value.isNotEmpty() && password.value.isNotEmpty() && termsChecked.value,

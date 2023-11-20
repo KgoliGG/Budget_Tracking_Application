@@ -2,6 +2,7 @@ package com.example.budgettrackingapplication.composable
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -66,7 +67,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     fun checkCredentials(loginuser: LoginUser): Boolean {
         val p0 = this.writableDatabase
         val query = "SELECT " +
-                "*" +
+                "$COLUMN_ID" +
                 "FROM " +
                 "$TABLE_USERS " +
                 "WHERE " +
@@ -84,7 +85,20 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
     }
 
-    fun updateUserData(id: UserID,user: UserDetails) : Int {
+    fun fetchuserid(loginuser: LoginUser) : Cursor? {
+        val query = "SELECT " +
+                "$COLUMN_ID" +
+                "FROM " +
+                "$TABLE_USERS " +
+                "WHERE " +
+                "$COLUMN_EMAIL = '${loginuser.email}' " +
+                "AND " +
+                "$COLUMN_PASSWORD = '${loginuser.password}'"
+        val id = readableDatabase.rawQuery(query,null)
+        return id
+    }
+
+    fun updateUserData(id: Cursor?, user: UserDetails) : Int {
         val values = ContentValues().apply {
             put(COLUMN_NAME, user.fullName)
             put(COLUMN_AGE, user.age)
