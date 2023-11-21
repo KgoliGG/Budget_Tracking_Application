@@ -1,7 +1,6 @@
 package com.example.budgettrackingapplication.composable.screens
 
-import android.content.Context
-import android.service.autofill.UserData
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -34,24 +34,24 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.core.Cache
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.R
 import com.example.budgettrackingapplication.composable.BackgroundDesign
 import com.example.budgettrackingapplication.composable.DatabaseHelper
 import com.example.budgettrackingapplication.composable.LoginUser
-import com.example.budgettrackingapplication.composable.UserID
 import com.example.budgettrackingapplication.composable.components.CheckboxComponentes
 import com.example.budgettrackingapplication.composable.components.ErrorMessage
 import com.example.budgettrackingapplication.composable.components.HeadingText
 import com.example.budgettrackingapplication.composable.components.SubHeading
+import com.example.budgettrackingapplication.composable.storeUserIDInCache
 import com.example.budgettrackingapplication.navigation.Screen
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
@@ -134,6 +134,7 @@ fun LoginPage(navController: NavController){
                             modifier = Modifier.padding()
                         )
                     },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     placeholder = {
                         Text(
                             text = "",
@@ -349,26 +350,49 @@ fun LoginPage(navController: NavController){
                         isEmailValid = validateEmail(email.value)
                         isPasswordValid = validatePassword(password.value)
 
-                        if (!isEmailValid){
+                        if (!isEmailValid) {
                             loginerror.value = "Invalid Email Format"
-                        }
-                        else if (!isPasswordValid){
+                        } else if (!isPasswordValid) {
                             loginerror.value = "Password should be at least 6 characters"
-                        }
-                        else{
+                        } else {
                             val userExists = databaseHelper.checkCredentials(user)
-                            if (userExists){
-                                Toast.makeText(context, "Logged in Successfully", Toast.LENGTH_SHORT).show()
-
-                                navController.navigate(
-                                    route = Screen.UserSetup.name
-                                )
+                            Log.d("credential output", "{${userExists}}")
+                            if (userExists as Boolean) {
+                                if (userExists){
+                                    val userIdCursor = databaseHelper.fetchuserid(user)
+                                    userIdCursor?.use { cursor ->
+                                        if (cursor.moveToFirst()) {
+                                            val userId = cursor.getString(cursor.getColumnIndexOrThrow("id"))
+//                                        Log.d("Cached UserID", userId)
+                                            storeUserIDInCache(context, userId)
+                                        }
+                                    }
+                                    Toast.makeText(context,"Logged in Successfully",Toast.LENGTH_SHORT).show()
+//                                Navigate to UserSetup
+                                    navController.navigate(
+                                        route = Screen.UserSetup.name
+                                    ){
+                                        popUpTo(Screen.LoginPage.name){
+                                            inclusive = true
+                                            saveState = true
+                                        }
+                                    }
+                                }
+                                else {
+                                    loginerror.value = "Please check your Credentials"
+                                }
                             }
-                            else{
-                                loginerror.value = "Please check your Credentials"
-                            }
+//                            else{
+//                                navController.navigate(
+//                                    route = Screen.HomeScreen.name
+//                                ){
+//                                    popUpTo(Screen.LoginPage.name){
+//                                        inclusive = true
+//                                        saveState = true
+//                                    }
+//                                }
+//                            }
                         }
-
                     },
                     enabled = email.value.isNotEmpty() && password.value.isNotEmpty() && checked.value,
                     colors = ButtonDefaults.buttonColors(Color(0xFF4F517D)),
@@ -416,16 +440,3 @@ private fun validatePassword(password: String): Boolean {
     return password.length >= 6
 }
 
-// Function to store the user ID in cache
-fun storeUserIDInCache(context: Context, userID: String) {
-    val sharedPreferences = context.getSharedPreferences("UserCache", Context.MODE_PRIVATE)
-    val editor = sharedPreferences.edit()
-    editor.putString("userID", userID)
-    editor.apply()
-}
-
-// Function to retrieve the user ID from cache
-fun getUserIDFromCache(context: Context): String? {
-    val sharedPreferences = context.getSharedPreferences("UserCache", Context.MODE_PRIVATE)
-    return sharedPreferences.getString("userID", null)
-}

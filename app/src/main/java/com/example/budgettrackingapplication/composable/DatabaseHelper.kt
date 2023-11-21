@@ -64,10 +64,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return exists
     }
 
-    fun checkCredentials(loginuser: LoginUser): Boolean {
+    fun checkCredentials(loginuser: LoginUser): Any {
         val p0 = this.writableDatabase
         val query = "SELECT " +
-                "$COLUMN_ID" +
+                "*" +
                 "FROM " +
                 "$TABLE_USERS " +
                 "WHERE " +
@@ -75,41 +75,51 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 "AND " +
                 "$COLUMN_PASSWORD = '${loginuser.password}'"
         val cursor = p0.rawQuery(query, null)
-        if (cursor.count<=0){
+        val columnIndex = cursor.getColumnIndexOrThrow(COLUMN_NAME)
+        return if(cursor.count<=0){
             cursor.close()
-            return false
+//            Log.d("cursor", "{${cursor.count}}")
+            false
         }
+//        else if (columnIndex != null){
+////            Log.d("cursor", "{${cursor.count}}")
+//            cursor.close()
+//            return "UserSetup already Completed"
+//        }
         else{
             cursor.close()
-            return true
+//            Log.d("cursor", "{${cursor.count}}")
+            true
         }
     }
 
-    fun fetchuserid(loginuser: LoginUser) : Cursor? {
+    fun fetchuserid(loginuser: LoginUser): Cursor? {
         val query = "SELECT " +
-                "$COLUMN_ID" +
+                "$COLUMN_ID " +
                 "FROM " +
                 "$TABLE_USERS " +
                 "WHERE " +
                 "$COLUMN_EMAIL = '${loginuser.email}' " +
                 "AND " +
                 "$COLUMN_PASSWORD = '${loginuser.password}'"
-        val id = readableDatabase.rawQuery(query,null)
-        return id
+        return readableDatabase.rawQuery(query, null)
     }
 
-    fun updateUserData(id: Cursor?, user: UserDetails) : Int {
-        val values = ContentValues().apply {
+    fun updateUserData(id: String?, user: UserDetails) : Boolean {
+
+        val contentValues = ContentValues().apply {
             put(COLUMN_NAME, user.fullName)
             put(COLUMN_AGE, user.age)
-            put(COLUMN_PASSWORD, user.gender)
+            put(COLUMN_GENDER, user.gender)
 
         }
         val whereClause = "$COLUMN_ID = ?"
         Log.d("ID Values","{${whereClause}}")
-        val whereArgs = arrayOf(id.id.toString())
+        val whereArgs = arrayOf(id)
 
-        return writableDatabase.update(TABLE_USERS, values, whereClause, whereArgs)
+        val rowsUpdated = writableDatabase.update(TABLE_USERS, contentValues, whereClause, whereArgs)
+
+        return rowsUpdated > 0
     }
 
 }

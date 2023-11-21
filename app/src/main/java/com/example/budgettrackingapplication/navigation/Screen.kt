@@ -12,5 +12,6 @@ enum class Screen{
     LoginPage,
     UserSetup,
     TermsAndCondition,
-    PrivacyPolicies
+    PrivacyPolicies,
+    HomeScreen
 }

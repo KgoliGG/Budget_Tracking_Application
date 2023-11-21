@@ -1,5 +1,7 @@
 package com.example.budgettrackingapplication.composable.screens
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,8 +35,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.composable.BackgroundDesign
 import com.example.budgettrackingapplication.composable.DatabaseHelper
-import com.example.budgettrackingapplication.composable.LoginUser
 import com.example.budgettrackingapplication.composable.UserDetails
+import com.example.budgettrackingapplication.composable.getUserIDFromCache
+import com.example.budgettrackingapplication.navigation.Screen
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
 @Composable
@@ -44,7 +47,7 @@ fun UserSetup(navController: NavController){
 
     val username = remember { mutableStateOf("") }
 
-    var userage = remember { mutableStateOf("") }
+    val userage = remember { mutableStateOf("") }
 
     val genderOptions = listOf("Male", "Female", "Woke")
 
@@ -223,11 +226,39 @@ fun UserSetup(navController: NavController){
 
         Button(
             onClick = {
-                val user = UserDetails(fullName = username.value, age = userage.value.toInt(), gender = selectedOption)
-                val userid = databaseHelper.fetchuserid()
-                // Update user data
-                val rowsUpdated = databaseHelper.updateUserData(userid, user)
+                try{
+                    val user = UserDetails(fullName = username.value, age = userage.value.toInt(), gender = selectedOption)
+                    val cachedUserID = getUserIDFromCache(context)
+                    println(cachedUserID)
+                    // Update user data
+                    if (cachedUserID != null) {
+                        val isUpdated = databaseHelper.updateUserData(cachedUserID, user)
+//                        Log.d("Update Result", "Is Updated: $isUpdated")
 
+                        if (isUpdated) {
+                            navController.navigate(
+                                route = Screen.HomeScreen.name
+                            ) {
+                                popUpTo(Screen.UserSetup.name) {
+                                    inclusive = true
+                                    saveState = true
+                                }
+                            }
+                            Toast.makeText(context, "Update Successful", Toast.LENGTH_SHORT).show()
+                        }
+
+                        else {
+                            Toast.makeText(context, "Update Failed", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    else {
+                        Log.d("Update Result", "Invalid UserID")
+                    }
+                }
+                catch (e: Exception){
+                    Log.e("Exception",e.toString())
+                    Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show()
+                }
             },
 //            enabled = email.value.isNotEmpty() && password.value.isNotEmpty() && termsChecked.value,
             colors = ButtonDefaults.buttonColors(Color(0xFF4F517D)),
