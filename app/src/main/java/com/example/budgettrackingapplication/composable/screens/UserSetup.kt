@@ -41,7 +41,7 @@ import com.example.budgettrackingapplication.navigation.Screen
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
 @Composable
-fun UserSetup(navController: NavController){
+fun UserSetup(navController: NavController) {
 
     BackgroundDesign()
 
@@ -51,7 +51,7 @@ fun UserSetup(navController: NavController){
 
     val genderOptions = listOf("Male", "Female", "Woke")
 
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(genderOptions[0] ) }
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf(genderOptions[0]) }
 
     val context = LocalContext.current
 
@@ -86,8 +86,7 @@ fun UserSetup(navController: NavController){
         )
 
         Spacer(
-            modifier = Modifier.
-            padding(10.dp)
+            modifier = Modifier.padding(10.dp)
         )
 
         OutlinedTextField(
@@ -226,8 +225,12 @@ fun UserSetup(navController: NavController){
 
         Button(
             onClick = {
-                try{
-                    val user = UserDetails(fullName = username.value, age = userage.value.toInt(), gender = selectedOption)
+                try {
+                    val user = UserDetails(
+                        fullName = username.value,
+                        age = userage.value.toInt(),
+                        gender = selectedOption
+                    )
                     val cachedUserID = getUserIDFromCache(context)
                     println(cachedUserID)
                     // Update user data
@@ -245,18 +248,14 @@ fun UserSetup(navController: NavController){
                                 }
                             }
                             Toast.makeText(context, "Update Successful", Toast.LENGTH_SHORT).show()
-                        }
-
-                        else {
+                        } else {
                             Toast.makeText(context, "Update Failed", Toast.LENGTH_SHORT).show()
                         }
-                    }
-                    else {
+                    } else {
                         Log.d("Update Result", "Invalid UserID")
                     }
-                }
-                catch (e: Exception){
-                    Log.e("Exception",e.toString())
+                } catch (e: Exception) {
+                    Log.e("Exception", e.toString())
                     Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show()
                 }
             },
@@ -291,6 +290,6 @@ fun UserSetup(navController: NavController){
 
 @Preview(showBackground = true)
 @Composable
-private fun UserSetupPreview(){
+private fun UserSetupPreview() {
     UserSetup(rememberNavController())
 }

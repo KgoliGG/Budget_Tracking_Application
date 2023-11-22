@@ -57,11 +57,11 @@ import com.example.budgettrackingapplication.ui.theme.montserrat
 
 
 @Composable
-fun LoginPage(navController: NavController){
+fun LoginPage(navController: NavController) {
 
-    Surface (
-         modifier = Modifier
-             .fillMaxSize()
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
     ) {
         BackgroundDesign()
 
@@ -86,12 +86,12 @@ fun LoginPage(navController: NavController){
 //    val focusRequester = remember { FocusRequester() }
 
 
-        Column (
+        Column(
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(start = 20.dp, top = 100.dp, end = 20.dp, bottom = 50.dp)
-        ){
+        ) {
             HeadingText(
                 value = "Login",
                 modifier = Modifier,
@@ -164,7 +164,8 @@ fun LoginPage(navController: NavController){
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.password_eye),
-                                contentDescription = null)
+                                contentDescription = null
+                            )
                         }
                     },
                     label = {
@@ -192,12 +193,9 @@ fun LoginPage(navController: NavController){
 
                     },
                     singleLine = true,
-                    visualTransformation = if (viewpassword.value)
-                    {
+                    visualTransformation = if (viewpassword.value) {
                         VisualTransformation.None
-                    }
-                    else
-                    {
+                    } else {
                         PasswordVisualTransformation()
                     },
                     modifier = Modifier
@@ -210,13 +208,13 @@ fun LoginPage(navController: NavController){
                     modifier = Modifier.padding(10.dp)
                 )
 
-                Row (
+                Row(
                     verticalAlignment = Alignment.Top,
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .padding(start = 5.dp)
                         .fillMaxWidth()
-                ){
+                ) {
 //Login Errors
                     ErrorMessage(value = loginerror.value)
 
@@ -255,12 +253,11 @@ fun LoginPage(navController: NavController){
                         checked.value = isChecked
                     },
                     onSelectedText = { selectedText ->
-                        if(selectedText == "Terms of Use"){
+                        if (selectedText == "Terms of Use") {
                             navController.navigate(
                                 route = Screen.TermsAndCondition.name
                             )
-                        }
-                        else //(selectedText == "Privacy Policies")
+                        } else //(selectedText == "Privacy Policies")
                         {
                             navController.navigate(
                                 route = Screen.PrivacyPolicies.name
@@ -358,27 +355,31 @@ fun LoginPage(navController: NavController){
                             val userExists = databaseHelper.checkCredentials(user)
                             Log.d("credential output", "{${userExists}}")
                             if (userExists as Boolean) {
-                                if (userExists){
+                                if (userExists) {
                                     val userIdCursor = databaseHelper.fetchuserid(user)
                                     userIdCursor?.use { cursor ->
                                         if (cursor.moveToFirst()) {
-                                            val userId = cursor.getString(cursor.getColumnIndexOrThrow("id"))
+                                            val userId =
+                                                cursor.getString(cursor.getColumnIndexOrThrow("id"))
 //                                        Log.d("Cached UserID", userId)
                                             storeUserIDInCache(context, userId)
                                         }
                                     }
-                                    Toast.makeText(context,"Logged in Successfully",Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        context,
+                                        "Logged in Successfully",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
 //                                Navigate to UserSetup
                                     navController.navigate(
                                         route = Screen.UserSetup.name
-                                    ){
-                                        popUpTo(Screen.LoginPage.name){
+                                    ) {
+                                        popUpTo(Screen.LoginPage.name) {
                                             inclusive = true
                                             saveState = true
                                         }
                                     }
-                                }
-                                else {
+                                } else {
                                     loginerror.value = "Please check your Credentials"
                                 }
                             }
@@ -427,7 +428,7 @@ fun LoginPage(navController: NavController){
 
 @Preview
 @Composable
-fun LoginPagePreview(){
+fun LoginPagePreview() {
     BackgroundDesign()
     LoginPage(rememberNavController())
 }

@@ -6,7 +6,7 @@ package com.example.budgettrackingapplication.navigation
 //    object Login : Screen(route = "login_screen")
 //}
 
-enum class Screen{
+enum class  Screen{
     LandingPage,
     RegistrationPage,
     LoginPage,

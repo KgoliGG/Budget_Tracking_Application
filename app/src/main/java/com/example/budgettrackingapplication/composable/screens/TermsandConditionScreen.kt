@@ -15,8 +15,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.composable.components.HeadingText
 
 @Composable
-fun TermsAndConditionScreen(navController: NavController){
-    Column (
+fun TermsAndConditionScreen(navController: NavController) {
+    Column(
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
             .fillMaxSize()
@@ -36,6 +36,6 @@ fun TermsAndConditionScreen(navController: NavController){
 
 @Preview
 @Composable
-fun TermsAndConditionPreview(){
+fun TermsAndConditionPreview() {
     TermsAndConditionScreen(rememberNavController())
 }

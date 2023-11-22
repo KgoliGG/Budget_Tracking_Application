@@ -31,13 +31,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.R
-import com.example.budgettrackingapplication.navigation.Screen
 import com.example.budgettrackingapplication.composable.BackgroundDesign
+import com.example.budgettrackingapplication.navigation.Screen
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
 
 @Composable
-fun LandingPage(navController: NavController){
+fun LandingPage(navController: NavController) {
     BackgroundDesign()
 
     Column(
@@ -93,7 +93,7 @@ fun LandingPage(navController: NavController){
                 painter = painterResource(id = R.drawable.logo_mark),
                 contentDescription = null,
                 Modifier
-                    .size(105.dp,175.dp)
+                    .size(105.dp, 175.dp)
             )
         }
 
@@ -159,8 +159,8 @@ fun LandingPage(navController: NavController){
 
         Box(
             modifier = Modifier
-            .padding(top = 50.dp)
-        ){
+                .padding(top = 50.dp)
+        ) {
             Button(
                 onClick = {
                     navController.navigate(
@@ -177,7 +177,7 @@ fun LandingPage(navController: NavController){
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
-            ){
+            ) {
                 Text(
                     text = "Get Started".uppercase(),
                     style = TextStyle(
@@ -194,9 +194,10 @@ fun LandingPage(navController: NavController){
 
     }
 }
+
 @Preview(showBackground = true)
 @Composable
-fun LandingPagePreview(){
+fun LandingPagePreview() {
     BackgroundDesign()
     LandingPage(rememberNavController())
 }

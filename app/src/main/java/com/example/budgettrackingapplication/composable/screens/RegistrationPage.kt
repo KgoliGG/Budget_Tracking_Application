@@ -54,7 +54,7 @@ import com.example.budgettrackingapplication.ui.theme.montserrat
 
 
 @Composable
-fun RegistrationPage(navController: NavController){
+fun RegistrationPage(navController: NavController) {
 
     val email = remember { mutableStateOf("") }
 
@@ -74,7 +74,7 @@ fun RegistrationPage(navController: NavController){
 
     val databaseHelper = DatabaseHelper(context)
 
-    Surface (
+    Surface(
         modifier = Modifier
             .fillMaxSize()
     ) {
@@ -83,7 +83,7 @@ fun RegistrationPage(navController: NavController){
 //    val focusRequester = remember { FocusRequester() }
 
 
-        Column (
+        Column(
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
                 .fillMaxSize()
@@ -95,8 +95,9 @@ fun RegistrationPage(navController: NavController){
                 ),
             verticalArrangement = Arrangement.Center
 
-        ){
-            HeadingText(value = "Create Account",
+        ) {
+            HeadingText(
+                value = "Create Account",
                 modifier = Modifier,
                 style = TextStyle()
             )
@@ -191,12 +192,9 @@ fun RegistrationPage(navController: NavController){
 
                     },
                     singleLine = true,
-                    visualTransformation = if (viewPassword.value)
-                    {
+                    visualTransformation = if (viewPassword.value) {
                         VisualTransformation.None
-                    }
-                    else
-                    {
+                    } else {
                         PasswordVisualTransformation()
                     },
                     modifier = Modifier
@@ -209,7 +207,7 @@ fun RegistrationPage(navController: NavController){
                     modifier = Modifier.padding(5.dp)
                 )
 
-                Row (
+                Row(
                     verticalAlignment = Alignment.Top,
                     modifier = Modifier
                         .padding(top = 10.dp)
@@ -233,12 +231,11 @@ fun RegistrationPage(navController: NavController){
                         termsChecked.value = isChecked
                     },
                     onSelectedText = { selectedText ->
-                        if(selectedText == "Terms of Use"){
+                        if (selectedText == "Terms of Use") {
                             navController.navigate(
                                 route = Screen.TermsAndCondition.name
                             )
-                        }
-                        else //(selectedText == "Privacy Policies")
+                        } else //(selectedText == "Privacy Policies")
                         {
                             navController.navigate(
                                 route = Screen.PrivacyPolicies.name
@@ -259,17 +256,17 @@ fun RegistrationPage(navController: NavController){
                         isPasswordValid.value = isValidPassword(password.value)
 
                         if (email.value.isNotEmpty() && password.value.isNotEmpty()) {
-                            if(!isEmailValid.value){
+                            if (!isEmailValid.value) {
 //                                error = false
                                 registrationerror.value = "Please enter a valid email address"
-                            }
-                            else if(!isPasswordValid.value) {
-                                registrationerror.value = "Password should not be less than 6 characters"
+                            } else if (!isPasswordValid.value) {
+                                registrationerror.value =
+                                    "Password should not be less than 6 characters"
                             }
 //                            else if(!termsChecked.value){
 //                                registrationerror.value = "Please read and accept all Terms of Use and Privacy Policies"
 //                            }
-                            else{
+                            else {
                                 val userExists = databaseHelper.isUserExists(email.value)
 
                                 if (userExists) {
@@ -277,14 +274,17 @@ fun RegistrationPage(navController: NavController){
                                 } else {
                                     val userId = UserID(generateUserId())
                                     val newUser = User(email.value, password.value)
-                                    databaseHelper.addUser(newUser,userId)
-                                    Toast.makeText(context, "User Created Successfully", Toast.LENGTH_SHORT).show()
+                                    databaseHelper.addUser(newUser, userId)
+                                    Toast.makeText(
+                                        context,
+                                        "User Created Successfully",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                     navController.navigate("LoginPage")
                                 }
                             }
 //                            Log.d("CheckedValue", "{${termsChecked}}")
-                        }
-                        else {
+                        } else {
                             registrationerror.value = "Please enter all information"
                         }
                     },
@@ -319,16 +319,17 @@ fun RegistrationPage(navController: NavController){
                     modifier = Modifier.padding(10.dp)
                 )
 //Create Account Button
-                ClickableText(text = buildAnnotatedString {
-                    append("Already have and account? ")
-                    withStyle(
-                        style = SpanStyle(
-                            color = Color.White,
-                        )
-                    ) {
-                        append("Login")
-                    }
-                },
+                ClickableText(
+                    text = buildAnnotatedString {
+                        append("Already have and account? ")
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.White,
+                            )
+                        ) {
+                            append("Login")
+                        }
+                    },
                     onClick = {
                         navController.navigate(
                             route = Screen.LoginPage.name
@@ -359,7 +360,7 @@ fun RegistrationPage(navController: NavController){
 
 @Preview(showBackground = true)
 @Composable
-fun RegistrationPagePreview(){
+fun RegistrationPagePreview() {
     RegistrationPage(rememberNavController())
 }
 

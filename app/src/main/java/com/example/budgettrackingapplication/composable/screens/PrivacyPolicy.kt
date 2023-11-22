@@ -15,8 +15,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.composable.components.HeadingText
 
 @Composable
-fun PrivacyPoliciesScreen(navController: NavController){
-    Column (
+fun PrivacyPoliciesScreen(navController: NavController) {
+    Column(
         horizontalAlignment = Alignment.Start,
         modifier = Modifier
             .fillMaxSize()
@@ -36,6 +36,6 @@ fun PrivacyPoliciesScreen(navController: NavController){
 
 @Preview
 @Composable
-fun PrivacyPoliciesPreview(){
+fun PrivacyPoliciesPreview() {
     TermsAndConditionScreen(rememberNavController())
 }
