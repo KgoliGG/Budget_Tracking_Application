@@ -17,7 +17,6 @@ import com.github.tehras.charts.piechart.utils.toLegacyInt
 class SimpleXAxisDrawer(
   private val labelTextSize: TextUnit = 12.sp,
   private val labelTextColor: Color = Color.Black,
-  /** 1 means we draw everything. 2 means we draw every other, and so on. */
   private val labelRatio: Int = 1,
   private val axisLineThickness: Dp = 1.dp,
   private val axisLineColor: Color = Color.Black

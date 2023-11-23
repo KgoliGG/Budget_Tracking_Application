@@ -3,9 +3,11 @@ package com.example.budgettrackingapplication.composable.components.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.budgettrackingapplication.composable.ExpensesState
+import com.example.budgettrackingapplication.composable.components.db
 import com.example.budgettrackingapplication.composable.components.models.Expense
 import com.example.budgettrackingapplication.composable.components.models.Recurrence
 import com.example.budgettrackingapplication.composable.components.utils.calculateDateRange
+import io.realm.kotlin.ext.query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

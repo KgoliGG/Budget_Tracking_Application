@@ -1,4 +1,4 @@
-package com.example.budgettrackingapplication.composable.screens
+package com.example.budgettrackingapplication.composable.pages
 
 import android.util.Log
 import android.widget.Toast

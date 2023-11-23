@@ -1,5 +1,6 @@
-package com.example.budgettrackingapplication.composable.screens
+package com.example.budgettrackingapplication.composable.pages
 
+import android.content.res.Configuration
 import com.example.budgettrackingapplication.composable.components.UnstyledTextField
 import com.example.budgettrackingapplication.composable.ui.theme.BackgroundElevated
 import com.example.budgettrackingapplication.composable.ui.theme.Shapes
@@ -23,12 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.composable.components.TableRow
 import com.example.budgettrackingapplication.composable.components.viewmodels.CategoriesViewModel
+import com.example.budgettrackingapplication.composable.ui.theme.BudgetTrackingApplicationTheme
 import com.example.budgettrackingapplication.composable.ui.theme.Destructive
 import com.example.budgettrackingapplication.composable.ui.theme.DividerColor
 import com.example.budgettrackingapplication.composable.ui.theme.TopAppBarBackground
@@ -38,8 +42,7 @@ import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
-    ExperimentalAnimationApi::class
+    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class
 )
 @Composable
 fun CategoriesScreen(
@@ -121,7 +124,9 @@ fun CategoriesScreen(
                                 }
                             }
                             if (index < uiState.categories.size - 1) {
-                                Row(modifier = Modifier.background(BackgroundElevated).height(1.dp)) {
+                                Row(modifier = Modifier
+                                    .background(BackgroundElevated)
+                                    .height(1.dp)) {
                                     Divider(
                                         modifier = Modifier.padding(start = 16.dp),
                                         thickness = 1.dp,
@@ -210,10 +215,7 @@ fun CategoriesScreen(
                         UnstyledTextField(
                             value = uiState.newCategoryName,
                             onValueChange = vm::setNewCategoryName,
-                            placeholder = { Text(
-                                "Category name"
-                            )
-                          },
+                            placeholder = { Text("Category name") },
                             modifier = Modifier
                                 .fillMaxWidth(),
                             maxLines = 1,
@@ -233,4 +235,12 @@ fun CategoriesScreen(
             }
         }
     })
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun CategoriesPreview() {
+    BudgetTrackingApplicationTheme {
+        CategoriesScreen(navController = rememberNavController())
+    }
 }

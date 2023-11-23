@@ -1,5 +1,6 @@
-package com.example.budgettrackingapplication.composable.screens
+package com.example.budgettrackingapplication.composable.pages
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,14 +35,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.composable.components.TableRow
 import com.example.budgettrackingapplication.composable.components.UnstyledTextField
 import com.example.budgettrackingapplication.composable.components.models.Recurrence
 import com.example.budgettrackingapplication.composable.components.viewmodels.AddViewModel
 import com.example.budgettrackingapplication.composable.ui.theme.BackgroundElevated
+import com.example.budgettrackingapplication.composable.ui.theme.BudgetTrackingApplicationTheme
 import com.example.budgettrackingapplication.composable.ui.theme.DividerColor
 import com.example.budgettrackingapplication.composable.ui.theme.Shapes
 import com.example.budgettrackingapplication.composable.ui.theme.TopAppBarBackground
@@ -51,7 +55,7 @@ import com.marosseleng.compose.material3.datetimepickers.date.ui.dialog.DatePick
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun AddScreen(navController: NavController, vm: AddViewModel = viewModel()) {
-    val uiState by vm.uiState.collectAsState()
+    val state by vm.uiState.collectAsState()
 
     val recurrences = listOf(
         Recurrence.None,
@@ -82,7 +86,7 @@ fun AddScreen(navController: NavController, vm: AddViewModel = viewModel()) {
             ) {
                 TableRow(label = "Amount", detailContent = {
                     UnstyledTextField(
-                        value = uiState.amount,
+                        value = state.amount,
                         onValueChange = vm::setAmount,
                         modifier = Modifier.fillMaxWidth(),
                         placeholder = { Text("0") },
@@ -108,7 +112,7 @@ fun AddScreen(navController: NavController, vm: AddViewModel = viewModel()) {
                     TextButton(
                         onClick = { recurrenceMenuOpened = true }, shape = Shapes.large
                     ) {
-                        Text(uiState.recurrence?.name ?: Recurrence.None.name)
+                        Text(state.recurrence?.name ?: Recurrence.None.name)
                         DropdownMenu(expanded = recurrenceMenuOpened,
                             onDismissRequest = { recurrenceMenuOpened = false }) {
                             recurrences.forEach { recurrence ->
@@ -130,7 +134,7 @@ fun AddScreen(navController: NavController, vm: AddViewModel = viewModel()) {
                 }
                 TableRow(label = "Date", detailContent = {
                     TextButton(onClick = { datePickerShowing = true }) {
-                        Text(uiState.date.toString())
+                        Text(state.date.toString())
                     }
                     if (datePickerShowing) {
                         DatePickerDialog(onDismissRequest = { datePickerShowing = false },
@@ -138,7 +142,7 @@ fun AddScreen(navController: NavController, vm: AddViewModel = viewModel()) {
                                 vm.setDate(it)
                                 datePickerShowing = false
                             },
-                            initialDate = uiState.date,
+                            initialDate = state.date,
                             title = { Text("Select date", style = Typography.titleLarge) })
                     }
                 })
@@ -149,7 +153,7 @@ fun AddScreen(navController: NavController, vm: AddViewModel = viewModel()) {
                 )
                 TableRow(label = "Note", detailContent = {
                     UnstyledTextField(
-                        value = uiState.note,
+                        value = state.note,
                         placeholder = { Text("Leave some notes") },
                         arrangement = Arrangement.End,
                         onValueChange = vm::setNote,
@@ -172,12 +176,12 @@ fun AddScreen(navController: NavController, vm: AddViewModel = viewModel()) {
                         onClick = { categoriesMenuOpened = true }, shape = Shapes.large
                     ) {
                         Text(
-                            uiState.category?.name ?: "Select a category first",
-                            color = uiState.category?.color ?: Color.White
+                            state.category?.name ?: "Select a category first",
+                            color = state.category?.color ?: Color.White
                         )
                         DropdownMenu(expanded = categoriesMenuOpened,
                             onDismissRequest = { categoriesMenuOpened = false }) {
-                            uiState.categories?.forEach { category ->
+                            state.categories?.forEach { category ->
                                 DropdownMenuItem(text = {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Surface(
@@ -202,10 +206,19 @@ fun AddScreen(navController: NavController, vm: AddViewModel = viewModel()) {
                 onClick = vm::submitExpense,
                 modifier = Modifier.padding(16.dp),
                 shape = Shapes.large,
-                enabled = uiState.category != null
+                enabled = state.category != null
             ) {
                 Text("Submit expense")
             }
         }
     })
+}
+
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewAdd() {
+    BudgetTrackingApplicationTheme {
+        val navController = rememberNavController()
+        AddScreen(navController = navController)
+    }
 }

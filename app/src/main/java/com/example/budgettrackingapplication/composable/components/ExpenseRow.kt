@@ -23,7 +23,7 @@ fun ExpenseRow(expense: Expense, modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                expense.note ?: expense.category!!.name,
+                expense.note,
                 style = Typography.headlineMedium
             )
             Text(

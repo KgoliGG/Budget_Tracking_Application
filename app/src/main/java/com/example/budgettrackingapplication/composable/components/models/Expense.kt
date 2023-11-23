@@ -1,14 +1,12 @@
 package com.example.budgettrackingapplication.composable.components.models
 
-import androidx.room.PrimaryKey
 import io.realm.kotlin.types.RealmObject
-import org.mongodb.kbson.ObjectId
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 class Expense(): RealmObject {
-    @PrimaryKey
-    var _id: ObjectId = ObjectId.invoke()
+    @io.realm.kotlin.types.annotations.PrimaryKey
+    var id: io.realm.kotlin.types.ObjectId = io.realm.kotlin.types.ObjectId.create()
     var amount: Double = 0.0
 
     private var _recurrenceName: String = "None"

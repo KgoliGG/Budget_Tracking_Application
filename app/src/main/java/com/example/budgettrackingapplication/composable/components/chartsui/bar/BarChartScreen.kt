@@ -1,13 +1,11 @@
 package com.example.budgettrackingapplication.composable.components.chartsui.bar
 
 import android.annotation.SuppressLint
-import android.print.PrintAttributes.Margins
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -30,9 +28,7 @@ import com.example.budgettrackingapplication.composable.components.chartsui.char
 import com.example.budgettrackingapplication.composable.components.chartsui.chartUIcomponents.bar.label.SimpleValueDrawer.DrawLocation
 import com.example.budgettrackingapplication.ui.theme.Margins.horizontal
 import com.example.budgettrackingapplication.ui.theme.Margins.vertical
-import com.example.budgettrackingapplication.ui.theme.Margins.horizontalLarge
 import com.example.budgettrackingapplication.ui.theme.Margins.verticalLarge
-import androidx.compose.material.icons.filled.*
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

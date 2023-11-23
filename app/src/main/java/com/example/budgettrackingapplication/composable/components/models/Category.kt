@@ -1,13 +1,11 @@
 package com.example.budgettrackingapplication.composable.components.models
 
 import androidx.compose.ui.graphics.Color
-import androidx.room.PrimaryKey
 import io.realm.kotlin.types.RealmObject
-import org.mongodb.kbson.ObjectId
 
 class Category() : RealmObject {
-    @PrimaryKey
-    var _id: ObjectId = ObjectId.invoke()
+    @io.realm.kotlin.types.annotations.PrimaryKey
+    var _id: io.realm.kotlin.types.ObjectId = io.realm.kotlin.types.ObjectId.create()
 
     private var _colorValue: String = "0,0,0"
     var name: String = ""

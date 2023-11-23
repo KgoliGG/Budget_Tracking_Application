@@ -1,5 +1,6 @@
-package com.example.budgettrackingapplication.composable.screens
+package com.example.budgettrackingapplication.composable.pages
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,31 +12,32 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,41 +46,42 @@ import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.R
 import com.example.budgettrackingapplication.composable.BackgroundDesign
 import com.example.budgettrackingapplication.composable.UserDatabaseHelper
-import com.example.budgettrackingapplication.composable.User
-import com.example.budgettrackingapplication.composable.UserID
+import com.example.budgettrackingapplication.composable.LoginUser
 import com.example.budgettrackingapplication.composable.components.CheckboxComponentes
 import com.example.budgettrackingapplication.composable.components.ErrorMessage
 import com.example.budgettrackingapplication.composable.components.HeadingText
+import com.example.budgettrackingapplication.composable.components.SubHeading
+import com.example.budgettrackingapplication.composable.storeUserIDInCache
 import com.example.budgettrackingapplication.navigation.Screen
 import com.example.budgettrackingapplication.ui.theme.montserrat
 
 
 @Composable
-fun RegistrationPage(navController: NavController) {
-
-    val email = remember { mutableStateOf("") }
-
-    val isEmailValid = remember { mutableStateOf(false) }
-
-    val isPasswordValid = remember { mutableStateOf(false) }
-
-    val registrationerror = remember { mutableStateOf("") }
-
-    val password = remember { mutableStateOf("") }
-
-    val viewPassword = remember { mutableStateOf(false) }
-
-    val termsChecked = remember { mutableStateOf(false) }
-
-    val context = LocalContext.current
-
-    val userDatabaseHelper = UserDatabaseHelper(context)
+fun LoginPage(navController: NavController) {
 
     Surface(
         modifier = Modifier
             .fillMaxSize()
     ) {
         BackgroundDesign()
+
+        val email = remember { mutableStateOf("") }
+
+        val loginerror = remember { mutableStateOf("") }
+
+        val password = remember { mutableStateOf("") }
+
+        val viewpassword = remember { mutableStateOf(false) }
+
+        var isEmailValid by remember { mutableStateOf(true) }
+
+        var isPasswordValid by remember { mutableStateOf(true) }
+
+        val checked = remember { mutableStateOf(false) }
+
+        val context = LocalContext.current
+
+        val userDatabaseHelper = UserDatabaseHelper(context)
 
 //    val focusRequester = remember { FocusRequester() }
 
@@ -87,24 +90,19 @@ fun RegistrationPage(navController: NavController) {
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    start = 20.dp,
-                    top = 100.dp,
-                    end = 20.dp,
-                    bottom = 50.dp
-                ),
-            verticalArrangement = Arrangement.Center
-
+                .padding(start = 20.dp, top = 100.dp, end = 20.dp, bottom = 50.dp)
         ) {
             HeadingText(
-                value = "Create Account",
-                modifier = Modifier,
-                style = TextStyle()
+                value = "Login"
             )
 
+            SubHeading(value = "with your account registered with SOLVIO to continue with the app.")
+
             Spacer(
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier
+                    .padding(10.dp)
             )
+
             Column(
                 horizontalAlignment = Alignment.Start,
                 modifier = Modifier
@@ -132,6 +130,7 @@ fun RegistrationPage(navController: NavController) {
                             modifier = Modifier.padding()
                         )
                     },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     placeholder = {
                         Text(
                             text = "",
@@ -156,11 +155,9 @@ fun RegistrationPage(navController: NavController) {
                     value = password.value,
                     onValueChange = { password.value = it },
                     trailingIcon = {
-                        IconButton(
-                            onClick = {
-                                viewPassword.value = !viewPassword.value
-                            }
-                        ) {
+                        IconButton(onClick = {
+                            viewpassword.value = !viewpassword.value
+                        }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.password_eye),
                                 contentDescription = null
@@ -192,7 +189,7 @@ fun RegistrationPage(navController: NavController) {
 
                     },
                     singleLine = true,
-                    visualTransformation = if (viewPassword.value) {
+                    visualTransformation = if (viewpassword.value) {
                         VisualTransformation.None
                     } else {
                         PasswordVisualTransformation()
@@ -204,31 +201,52 @@ fun RegistrationPage(navController: NavController) {
                 )
 
                 Spacer(
-                    modifier = Modifier.padding(5.dp)
+                    modifier = Modifier.padding(10.dp)
                 )
 
                 Row(
                     verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
-                        .padding(top = 10.dp)
-//                    horizontalArrangement = Arrangement.SpaceBetween
+                        .padding(start = 5.dp)
+                        .fillMaxWidth()
                 ) {
-//Registration Errors
-                    ErrorMessage(value = registrationerror.value)
+//Login Errors
+                    ErrorMessage(value = loginerror.value)
+
+                    Spacer(
+                        modifier = Modifier.padding(10.dp)
+                    )
+//Forgot Password
+                    Text(
+                        text = "Forgot Password?",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontFamily = montserrat,
+                            fontWeight = FontWeight(600),
+                            color = Color(0xFFFFFFFF),
+                            letterSpacing = 0.2.sp,
+                        ),
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.End,
+                    )
                 }
 
+
+//Checkbox for Terms and Conditions
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(.3f)
+                        .fillMaxHeight(.2f)
                 )
 
-//Checkbox for Terms and Conditions
 
                 CheckboxComponentes(
-                    checked = termsChecked.value,
+                    checked = checked.value,
                     onCheckedChange = { isChecked ->
-                        termsChecked.value = isChecked
+                        checked.value = isChecked
                     },
                     onSelectedText = { selectedText ->
                         if (selectedText == "Terms of Use") {
@@ -245,50 +263,135 @@ fun RegistrationPage(navController: NavController) {
 
                 )
 
+//                Row(
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.Start,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(top = 50.dp)
+//                ) {
+//                    Checkbox(
+//                        checked = checked.value,
+//                        onCheckedChange = { checked.value = it},
+//                        colors = CheckboxDefaults.colors(Color.White)
+//                    )
+//
+//                    ClickableText(text = buildAnnotatedString {
+//                        append(
+//                            text = "I have read all ",
+//                        )
+//                        withStyle(
+//                            style = SpanStyle(
+//                                color = Color.White,
+//                            )
+//                        ) {
+//                            append("Terms and Condition")
+//                        }
+//                    },
+//                        onClick = {
+//                            checked.value = true
+//                        },
+//                        style = TextStyle(
+//                            fontSize = 14.sp,
+//                            fontFamily = montserrat,
+//                            fontWeight = FontWeight(600),
+//                            color = Color(0xFFFFFFFF),
+//                            letterSpacing = 0.2.sp,
+//                        )
+//                    )
+//                }
+
                 Spacer(
                     modifier = Modifier.padding(10.dp)
                 )
 
+//Create Account Button
+                OutlinedButton(
+                    onClick = {
+                        navController.navigate(
+                            route = Screen.RegistrationPage.name
+                        )
+                    },
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                ) {
+                    Text(
+                        text = "Create Account",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = montserrat,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFFFFFFFF),
+                            textAlign = TextAlign.Center,
+                            letterSpacing = 1.2.sp,
+                        )
+                    )
+
+                }
+
+                Spacer(
+                    modifier = Modifier.padding(5.dp)
+                )
 //Login Button
                 Button(
                     onClick = {
-                        isEmailValid.value = isValidEmail(email.value)
-                        isPasswordValid.value = isValidPassword(password.value)
 
-                        if (email.value.isNotEmpty() && password.value.isNotEmpty()) {
-                            if (!isEmailValid.value) {
-//                                error = false
-                                registrationerror.value = "Please enter a valid email address"
-                            } else if (!isPasswordValid.value) {
-                                registrationerror.value =
-                                    "Password should not be less than 6 characters"
-                            }
-//                            else if(!termsChecked.value){
-//                                registrationerror.value = "Please read and accept all Terms of Use and Privacy Policies"
-//                            }
-                            else {
-                                val userExists = userDatabaseHelper.isUserExists(email.value)
+                        val user = LoginUser(email.value, password.value)
 
+                        isEmailValid = validateEmail(email.value)
+                        isPasswordValid = validatePassword(password.value)
+
+                        if (!isEmailValid) {
+                            loginerror.value = "Invalid Email Format"
+                        } else if (!isPasswordValid) {
+                            loginerror.value = "Password should be at least 6 characters"
+                        } else {
+                            val userExists = userDatabaseHelper.checkCredentials(user)
+                            Log.d("credential output", "{${userExists}}")
+                            if (userExists as Boolean) {
                                 if (userExists) {
-                                    registrationerror.value = "User already exists"
-                                } else {
-                                    val userId = UserID(generateUserId())
-                                    val newUser = User(email.value, password.value)
-                                    userDatabaseHelper.addUser(newUser, userId)
+                                    val userIdCursor = userDatabaseHelper.fetchuserid(user)
+                                    userIdCursor?.use { cursor ->
+                                        if (cursor.moveToFirst()) {
+                                            val userId =
+                                                cursor.getString(cursor.getColumnIndexOrThrow("id"))
+//                                        Log.d("Cached UserID", userId)
+                                            storeUserIDInCache(context, userId)
+                                        }
+                                    }
                                     Toast.makeText(
                                         context,
-                                        "User Created Successfully",
+                                        "Logged in Successfully",
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                    navController.navigate("LoginPage")
+//                                Navigate to UserSetup
+                                    navController.navigate(
+                                        route = Screen.UserSetup.name
+                                    ) {
+                                        popUpTo(Screen.LoginPage.name) {
+                                            inclusive = true
+                                            saveState = true
+                                        }
+                                    }
+                                } else {
+                                    loginerror.value = "Please check your Credentials"
                                 }
                             }
-//                            Log.d("CheckedValue", "{${termsChecked}}")
-                        } else {
-                            registrationerror.value = "Please enter all information"
+//                            else{
+//                                navController.navigate(
+//                                    route = Screen.HomeScreen.name
+//                                ){
+//                                    popUpTo(Screen.LoginPage.name){
+//                                        inclusive = true
+//                                        saveState = true
+//                                    }
+//                                }
+//                            }
                         }
                     },
-                    enabled = email.value.isNotEmpty() && password.value.isNotEmpty() && termsChecked.value,
+                    enabled = email.value.isNotEmpty() && password.value.isNotEmpty() && checked.value,
                     colors = ButtonDefaults.buttonColors(Color(0xFF4F517D)),
                     shape = RoundedCornerShape(10.dp),
                     elevation = ButtonDefaults.buttonElevation(
@@ -299,10 +402,9 @@ fun RegistrationPage(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)
-
                 ) {
                     Text(
-                        text = "Create Account".uppercase(),
+                        text = "Login".uppercase(),
                         style = TextStyle(
                             fontSize = 16.sp,
                             fontFamily = montserrat,
@@ -312,68 +414,26 @@ fun RegistrationPage(navController: NavController) {
                             letterSpacing = 1.6.sp,
                         )
                     )
-
                 }
 
-                Spacer(
-                    modifier = Modifier.padding(10.dp)
-                )
-//Create Account Button
-                ClickableText(
-                    text = buildAnnotatedString {
-                        append("Already have and account? ")
-                        withStyle(
-                            style = SpanStyle(
-                                color = Color.White,
-                            )
-                        ) {
-                            append("Login")
-                        }
-                    },
-                    onClick = {
-                        navController.navigate(
-                            route = Screen.LoginPage.name
-                        )
-
-                    },
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        fontFamily = montserrat,
-                        fontWeight = FontWeight(600),
-                        color = Color(0xFFFFFFFF),
-                        letterSpacing = 0.2.sp,
-                        textAlign = TextAlign.Center
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                )
-
-                Spacer(
-                    modifier = Modifier.padding(5.dp)
-                )
-
             }
+
         }
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun RegistrationPagePreview() {
-    RegistrationPage(rememberNavController())
+fun LoginPagePreview() {
+    BackgroundDesign()
+    LoginPage(rememberNavController())
 }
 
-//Email Validation
-fun isValidEmail(email: String): Boolean {
+private fun validateEmail(email: String): Boolean {
     return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
 
-//Password Length Validation
-private fun isValidPassword(password: String): Boolean {
+private fun validatePassword(password: String): Boolean {
     return password.length >= 6
 }
 
-private fun generateUserId(): Int {
-    return System.currentTimeMillis().toInt()
-}

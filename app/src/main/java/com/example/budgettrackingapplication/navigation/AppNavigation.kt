@@ -1,7 +1,6 @@
 package com.example.budgettrackingapplication.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,17 +8,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.budgettrackingapplication.composable.screens.AddScreen
-import com.example.budgettrackingapplication.composable.screens.CategoriesScreen
-import com.example.budgettrackingapplication.composable.screens.ExpensesScreen
-import com.example.budgettrackingapplication.composable.screens.LandingPage
-import com.example.budgettrackingapplication.composable.screens.LoginPage
-import com.example.budgettrackingapplication.composable.screens.PrivacyPoliciesScreen
-import com.example.budgettrackingapplication.composable.screens.RegistrationPage
-import com.example.budgettrackingapplication.composable.screens.ReportsScreen
-import com.example.budgettrackingapplication.composable.screens.SettingsScreen
-import com.example.budgettrackingapplication.composable.screens.TermsAndConditionScreen
-import com.example.budgettrackingapplication.composable.screens.UserSetup
+import com.example.budgettrackingapplication.composable.pages.AddScreen
+import com.example.budgettrackingapplication.composable.pages.CategoriesScreen
+import com.example.budgettrackingapplication.composable.pages.ExpensesScreen
+import com.example.budgettrackingapplication.composable.pages.LandingPage
+import com.example.budgettrackingapplication.composable.pages.LoginPage
+import com.example.budgettrackingapplication.composable.pages.PrivacyPoliciesScreen
+import com.example.budgettrackingapplication.composable.pages.RegistrationPage
+import com.example.budgettrackingapplication.composable.pages.ReportsScreen
+import com.example.budgettrackingapplication.composable.pages.SettingsScreen
+import com.example.budgettrackingapplication.composable.pages.TermsAndConditionScreen
+import com.example.budgettrackingapplication.composable.pages.UserSetup
 
 
 @Composable
@@ -42,7 +41,12 @@ fun AppNavigation(){
             UserSetup(navController = navController)
         }
         composable(route = Screen.ExpensesScreen.name) {
-            ExpensesScreen(navController = navController)
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                ExpensesScreen(navController = navController)
+            }
         }
         composable(route = Screen.TermsAndCondition.name){
             TermsAndConditionScreen(navController = navController)
@@ -63,7 +67,7 @@ fun AppNavigation(){
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                AddScreen(navController)
+                AddScreen(navController = navController)
             }
         }
         composable(route = Screen.SettingsScreen.name) {
@@ -71,7 +75,7 @@ fun AppNavigation(){
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                SettingsScreen(navController)
+                SettingsScreen(navController = navController)
             }
         }
         composable(route = Screen.SettingsCategoriesScreen.name) {
@@ -79,7 +83,7 @@ fun AppNavigation(){
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                CategoriesScreen(navController)
+                CategoriesScreen(navController = navController)
             }
         }
     }

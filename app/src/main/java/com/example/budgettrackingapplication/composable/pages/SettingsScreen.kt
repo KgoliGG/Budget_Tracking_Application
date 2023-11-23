@@ -1,4 +1,4 @@
-package com.example.budgettrackingapplication.composable.screens
+package com.example.budgettrackingapplication.composable.pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,12 +24,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.budgettrackingapplication.composable.components.TableRow
+import com.example.budgettrackingapplication.composable.components.db
 import com.example.budgettrackingapplication.composable.components.models.Category
 import com.example.budgettrackingapplication.composable.components.models.Expense
 import com.example.budgettrackingapplication.composable.ui.theme.BackgroundElevated
 import com.example.budgettrackingapplication.composable.ui.theme.DividerColor
 import com.example.budgettrackingapplication.composable.ui.theme.Shapes
 import com.example.budgettrackingapplication.composable.ui.theme.TopAppBarBackground
+import io.realm.kotlin.ext.query
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -2,10 +2,12 @@ package com.example.budgettrackingapplication.composable.components.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.budgettrackingapplication.composable.AddScreenState
+import com.example.budgettrackingapplication.composable.components.db
 import com.example.budgettrackingapplication.composable.components.models.Category
 import com.example.budgettrackingapplication.composable.components.models.Expense
 import com.example.budgettrackingapplication.composable.components.models.Recurrence
+import io.realm.kotlin.ext.query
+import io.realm.kotlin.query.RealmResults
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,6 +16,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
+
+data class AddScreenState(
+    val amount: String = "",
+    val recurrence: Recurrence = Recurrence.None,
+    val date: LocalDate = LocalDate.now(),
+    val note: String = "",
+    val category: Category? = null,
+    val categories: RealmResults<Category>? = null
+)
 
 class AddViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(AddScreenState())
