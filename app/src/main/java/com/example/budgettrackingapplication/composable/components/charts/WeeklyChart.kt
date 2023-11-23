@@ -7,9 +7,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.budgettrackingapplication.composable.components.chartsui.chartUIcomponents.bar.BarChart
+import com.example.budgettrackingapplication.composable.components.chartsui.chartUIcomponents.bar.BarChartData
+import com.example.budgettrackingapplication.composable.components.chartsui.chartUIcomponents.bar.yaxis.SimpleYAxisDrawer
 import com.example.budgettrackingapplication.composable.components.models.Expense
 import com.example.budgettrackingapplication.composable.components.models.Recurrence
 import com.example.budgettrackingapplication.composable.components.models.groupedByDayOfWeek
+import com.example.budgettrackingapplication.composable.components.utils.simplifyNumber
 import com.example.budgettrackingapplication.composable.ui.theme.LabelSecondary
 import java.time.DayOfWeek
 
@@ -20,38 +24,38 @@ fun WeeklyChart(expenses: List<Expense>) {
     BarChart(
         barChartData = BarChartData(
             bars = listOf(
-                Bar(
+                BarChartData.Bar(
                     label = DayOfWeek.MONDAY.name.substring(0, 1),
                     value = groupedExpenses[DayOfWeek.MONDAY.name]?.total?.toFloat()
                         ?: 0f,
                     color = Color.White,
                 ),
-                Bar(
+                BarChartData.Bar(
                     label = DayOfWeek.TUESDAY.name.substring(0, 1),
                     value = groupedExpenses[DayOfWeek.TUESDAY.name]?.total?.toFloat() ?: 0f,
                     color = Color.White
                 ),
-                Bar(
+                BarChartData.Bar(
                     label = DayOfWeek.WEDNESDAY.name.substring(0, 1),
                     value = groupedExpenses[DayOfWeek.WEDNESDAY.name]?.total?.toFloat() ?: 0f,
                     color = Color.White
                 ),
-                Bar(
+                BarChartData.Bar(
                     label = DayOfWeek.THURSDAY.name.substring(0, 1),
                     value = groupedExpenses[DayOfWeek.THURSDAY.name]?.total?.toFloat() ?: 0f,
                     color = Color.White
                 ),
-                Bar(
+                BarChartData.Bar(
                     label = DayOfWeek.FRIDAY.name.substring(0, 1),
                     value = groupedExpenses[DayOfWeek.FRIDAY.name]?.total?.toFloat() ?: 0f,
                     color = Color.White
                 ),
-                Bar(
+                BarChartData.Bar(
                     label = DayOfWeek.SATURDAY.name.substring(0, 1),
                     value = groupedExpenses[DayOfWeek.SATURDAY.name]?.total?.toFloat() ?: 0f,
                     color = Color.White
                 ),
-                Bar(
+                BarChartData.Bar(
                     label = DayOfWeek.SUNDAY.name.substring(0, 1),
                     value = groupedExpenses[DayOfWeek.SUNDAY.name]?.total?.toFloat() ?: 0f,
                     color = Color.White

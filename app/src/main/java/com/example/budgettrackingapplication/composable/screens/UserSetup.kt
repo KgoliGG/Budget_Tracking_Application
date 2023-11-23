@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.composable.BackgroundDesign
-import com.example.budgettrackingapplication.composable.DatabaseHelper
+import com.example.budgettrackingapplication.composable.UserDatabaseHelper
 import com.example.budgettrackingapplication.composable.UserDetails
 import com.example.budgettrackingapplication.composable.getUserIDFromCache
 import com.example.budgettrackingapplication.navigation.Screen
@@ -55,7 +55,7 @@ fun UserSetup(navController: NavController) {
 
     val context = LocalContext.current
 
-    val databaseHelper = DatabaseHelper(context)
+    val userDatabaseHelper = UserDatabaseHelper(context)
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -235,12 +235,12 @@ fun UserSetup(navController: NavController) {
                     println(cachedUserID)
                     // Update user data
                     if (cachedUserID != null) {
-                        val isUpdated = databaseHelper.updateUserData(cachedUserID, user)
+                        val isUpdated = userDatabaseHelper.updateUserData(cachedUserID, user)
 //                        Log.d("Update Result", "Is Updated: $isUpdated")
 
                         if (isUpdated) {
                             navController.navigate(
-                                route = Screen.HomeScreen.name
+                                route = Screen.ExpensesScreen.name
                             ) {
                                 popUpTo(Screen.UserSetup.name) {
                                     inclusive = true

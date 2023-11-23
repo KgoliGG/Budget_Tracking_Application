@@ -45,7 +45,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.R
 import com.example.budgettrackingapplication.composable.BackgroundDesign
-import com.example.budgettrackingapplication.composable.DatabaseHelper
+import com.example.budgettrackingapplication.composable.UserDatabaseHelper
 import com.example.budgettrackingapplication.composable.LoginUser
 import com.example.budgettrackingapplication.composable.components.CheckboxComponentes
 import com.example.budgettrackingapplication.composable.components.ErrorMessage
@@ -81,7 +81,7 @@ fun LoginPage(navController: NavController) {
 
         val context = LocalContext.current
 
-        val databaseHelper = DatabaseHelper(context)
+        val userDatabaseHelper = UserDatabaseHelper(context)
 
 //    val focusRequester = remember { FocusRequester() }
 
@@ -352,11 +352,11 @@ fun LoginPage(navController: NavController) {
                         } else if (!isPasswordValid) {
                             loginerror.value = "Password should be at least 6 characters"
                         } else {
-                            val userExists = databaseHelper.checkCredentials(user)
+                            val userExists = userDatabaseHelper.checkCredentials(user)
                             Log.d("credential output", "{${userExists}}")
                             if (userExists as Boolean) {
                                 if (userExists) {
-                                    val userIdCursor = databaseHelper.fetchuserid(user)
+                                    val userIdCursor = userDatabaseHelper.fetchuserid(user)
                                     userIdCursor?.use { cursor ->
                                         if (cursor.moveToFirst()) {
                                             val userId =

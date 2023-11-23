@@ -1,37 +1,23 @@
 package com.example.budgettrackingapplication.composable.screens
 
-import androidx.compose.animation.AnimatedVisibility
+import com.example.budgettrackingapplication.composable.components.UnstyledTextField
+import com.example.budgettrackingapplication.composable.ui.theme.BackgroundElevated
+import com.example.budgettrackingapplication.composable.ui.theme.Shapes
+import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.LazyGridItemScopeImpl.animateItemPlacement
-import com.example.budgettrackingapplication.R
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.Send
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Shapes
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.Typography
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import com.example.budgettrackingapplication.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,16 +28,21 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.budgettrackingapplication.composable.components.TableRow
-import com.example.budgettrackingapplication.composable.components.UnstyledTextField
-import com.example.budgettrackingapplication.composable.ui.theme.BackgroundElevated
+import com.example.budgettrackingapplication.composable.components.viewmodels.CategoriesViewModel
 import com.example.budgettrackingapplication.composable.ui.theme.Destructive
 import com.example.budgettrackingapplication.composable.ui.theme.DividerColor
-import com.example.budgettrackingapplication.composable.ui.theme.Shapes
 import com.example.budgettrackingapplication.composable.ui.theme.TopAppBarBackground
-import com.example.budgettrackingapplication.ui.theme.Typography
+import com.example.budgettrackingapplication.composable.ui.theme.Typography
+import com.github.skydoves.colorpicker.compose.*
+import me.saket.swipe.SwipeAction
+import me.saket.swipe.SwipeableActionsBox
 
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+    ExperimentalAnimationApi::class
+)
 @Composable
-fun Categories(
+fun CategoriesScreen(
     navController: NavController, vm: CategoriesViewModel = viewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
@@ -130,10 +121,7 @@ fun Categories(
                                 }
                             }
                             if (index < uiState.categories.size - 1) {
-                                Row(
-                                    modifier = Modifier
-                                        .background(BackgroundElevated)
-                                        .height(1.dp)) {
+                                Row(modifier = Modifier.background(BackgroundElevated).height(1.dp)) {
                                     Divider(
                                         modifier = Modifier.padding(start = 16.dp),
                                         thickness = 1.dp,
@@ -222,7 +210,10 @@ fun Categories(
                         UnstyledTextField(
                             value = uiState.newCategoryName,
                             onValueChange = vm::setNewCategoryName,
-                            placeholder = { Text("Category name") },
+                            placeholder = { Text(
+                                "Category name"
+                            )
+                          },
                             modifier = Modifier
                                 .fillMaxWidth(),
                             maxLines = 1,

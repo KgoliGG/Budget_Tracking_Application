@@ -8,7 +8,7 @@ import java.time.LocalDateTime
 
 class Expense(): RealmObject {
     @PrimaryKey
-    var _id: ObjectId = ObjectId.create()
+    var _id: ObjectId = ObjectId.invoke()
     var amount: Double = 0.0
 
     private var _recurrenceName: String = "None"

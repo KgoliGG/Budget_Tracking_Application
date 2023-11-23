@@ -7,9 +7,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.budgettrackingapplication.composable.components.chartsui.chartUIcomponents.bar.BarChart
+import com.example.budgettrackingapplication.composable.components.chartsui.chartUIcomponents.bar.BarChartData
+import com.example.budgettrackingapplication.composable.components.chartsui.chartUIcomponents.bar.yaxis.SimpleYAxisDrawer
 import com.example.budgettrackingapplication.composable.components.models.Expense
 import com.example.budgettrackingapplication.composable.components.models.Recurrence
 import com.example.budgettrackingapplication.composable.components.models.groupedByMonth
+import com.example.budgettrackingapplication.composable.components.utils.simplifyNumber
 import com.example.budgettrackingapplication.composable.ui.theme.LabelSecondary
 import java.time.Month
 

@@ -4,11 +4,13 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
+import com.example.budgettrackingapplication.composable.components.chartsui.chartUIcomponents.bar.label.LabelDrawer
 import com.example.budgettrackingapplication.composable.components.models.Recurrence
 import com.example.budgettrackingapplication.composable.ui.theme.LabelSecondary
+import com.github.tehras.charts.piechart.utils.toLegacyInt
 
 class LabelDrawer(val recurrence: Recurrence, private val lastDay: Int? = -1) :
-    com.github.tehras.charts.bar.renderer.label.LabelDrawer {
+    LabelDrawer {
     private val leftOffset = when (recurrence) {
         Recurrence.Weekly -> 50f
         Recurrence.Monthly -> 13f
@@ -22,7 +24,7 @@ class LabelDrawer(val recurrence: Recurrence, private val lastDay: Int? = -1) :
         this.textSize = 42f
     }
 
-    fun drawLabel(
+    override fun drawLabel(
         drawScope: DrawScope,
         canvas: Canvas,
         label: String,

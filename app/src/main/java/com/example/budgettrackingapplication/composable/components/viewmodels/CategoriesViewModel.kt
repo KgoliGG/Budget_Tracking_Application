@@ -1,5 +1,6 @@
 package com.example.budgettrackingapplication.composable.components.viewmodels
 
+import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,20 +17,17 @@ class CategoriesViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(CategoriesState())
     val uiState: StateFlow<CategoriesState> = _uiState.asStateFlow()
 
-    init {
-        _uiState.update { currentState ->
-            currentState.copy(
-                categories = db.query<Category>().find()
-            )
-        }
+    private lateinit var categoryDao: CategoryDao
+
+    fun initializeDatabase(context: Context) {
+        val database = AppDatabase.getInstance(context)
+        categoryDao = database.categoryDao()
 
         viewModelScope.launch(Dispatchers.IO) {
-            db.query<Category>().asFlow().collect { changes ->
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        categories = changes.list
-                    )
-                }
+            _uiState.update { currentState ->
+                currentState.copy(
+                    categories = categoryDao.getAllCategories()
+                )
             }
         }
     }
@@ -68,12 +66,12 @@ class CategoriesViewModel : ViewModel() {
 
     fun createNewCategory() {
         viewModelScope.launch(Dispatchers.IO) {
-            db.write {
-                this.copyToRealm(Category(
-                    _uiState.value.newCategoryName,
-                    _uiState.value.newCategoryColor
-                ))
-            }
+            categoryDao.insertCategory(
+                Category(
+                    name = _uiState.value.newCategoryName,
+                    color = _uiState.value.newCategoryColor
+                )
+            )
             _uiState.update { currentState ->
                 currentState.copy(
                     newCategoryColor = Color.White,
@@ -85,10 +83,7 @@ class CategoriesViewModel : ViewModel() {
 
     fun deleteCategory(category: Category) {
         viewModelScope.launch(Dispatchers.IO) {
-            db.write {
-                val deletingCategory = this.query<Category>("_id == $0", category._id).find().first()
-                delete(deletingCategory)
-            }
+            categoryDao.deleteCategory(category)
         }
     }
 }

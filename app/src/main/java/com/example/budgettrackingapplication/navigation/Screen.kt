@@ -13,10 +13,9 @@ enum class  Screen{
     UserSetup,
     TermsAndCondition,
     PrivacyPolicies,
-    HomeScreen,
     ExpensesScreen,
     ReportsScreen,
     AddScreen,
-    SettingsScree,
+    SettingsScreen,
     SettingsCategoriesScreen
 }

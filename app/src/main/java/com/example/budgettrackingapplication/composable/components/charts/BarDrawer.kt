@@ -4,10 +4,13 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import com.example.budgettrackingapplication.composable.components.chartsui.chartUIcomponents.bar.BarChartData
+import com.example.budgettrackingapplication.composable.components.chartsui.chartUIcomponents.bar.bar.BarDrawer
 import com.example.budgettrackingapplication.composable.components.models.Recurrence
+import com.example.budgettrackingapplication.composable.ui.theme.SystemGray04
 
 class BarDrawer constructor(recurrence: Recurrence) :
-    com.github.tehras.charts.bar.renderer.bar.BarDrawer {
+    BarDrawer {
     private val barPaint = Paint().apply {
         this.isAntiAlias = true
     }

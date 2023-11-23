@@ -43,7 +43,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettrackingapplication.R
 import com.example.budgettrackingapplication.composable.BackgroundDesign
-import com.example.budgettrackingapplication.composable.DatabaseHelper
+import com.example.budgettrackingapplication.composable.UserDatabaseHelper
 import com.example.budgettrackingapplication.composable.User
 import com.example.budgettrackingapplication.composable.UserID
 import com.example.budgettrackingapplication.composable.components.CheckboxComponentes
@@ -72,7 +72,7 @@ fun RegistrationPage(navController: NavController) {
 
     val context = LocalContext.current
 
-    val databaseHelper = DatabaseHelper(context)
+    val userDatabaseHelper = UserDatabaseHelper(context)
 
     Surface(
         modifier = Modifier
@@ -267,14 +267,14 @@ fun RegistrationPage(navController: NavController) {
 //                                registrationerror.value = "Please read and accept all Terms of Use and Privacy Policies"
 //                            }
                             else {
-                                val userExists = databaseHelper.isUserExists(email.value)
+                                val userExists = userDatabaseHelper.isUserExists(email.value)
 
                                 if (userExists) {
                                     registrationerror.value = "User already exists"
                                 } else {
                                     val userId = UserID(generateUserId())
                                     val newUser = User(email.value, password.value)
-                                    databaseHelper.addUser(newUser, userId)
+                                    userDatabaseHelper.addUser(newUser, userId)
                                     Toast.makeText(
                                         context,
                                         "User Created Successfully",

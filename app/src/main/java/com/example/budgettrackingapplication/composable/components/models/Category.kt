@@ -7,7 +7,7 @@ import org.mongodb.kbson.ObjectId
 
 class Category() : RealmObject {
     @PrimaryKey
-    var _id: ObjectId = ObjectId.create()
+    var _id: ObjectId = ObjectId.invoke()
 
     private var _colorValue: String = "0,0,0"
     var name: String = ""
